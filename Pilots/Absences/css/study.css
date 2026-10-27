@@ -5,8 +5,8 @@ button,input,select,textarea{font:inherit}button,.jspsych-btn{border:1px solid #
 #review-panel{position:sticky;top:0;z-index:100;background:#eef3f6;border-bottom:1px solid #cad8e1;padding:10px 20px;font:14px/1.5 system-ui;text-align:left}#review-panel button{font-size:14px;padding:5px 10px;margin:3px 5px 3px 0}#review-panel select{font-size:14px;padding:4px;max-width:100%;min-width:0}#review-panel label{display:inline-flex;align-items:center;gap:7px;margin:5px 14px 5px 0;min-width:0}#review-panel p{margin:6px 0}#review-panel .review-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}#review-status{font-size:13px;color:#405464}.review-entry{max-width:800px;margin:30px auto;padding:24px}.review-entry h1{font-size:27px}#jspsych-progressbar-container{position:relative;background:#fafcfd;border-color:var(--line)}
 @media(max-width:600px){body,.jspsych-display-element{font-size:17px}.page{padding:22px 18px 40px}.story{line-height:1.6}.consent-card{padding:22px 18px}.scale-options{gap:2px}.scale-options label{padding:5px 1px}.scale-anchors{font-size:12px}#review-panel{position:relative;padding:10px 12px}#review-panel label{display:flex;margin:6px 0}#review-panel .review-row{display:block}.sentence-slot{min-height:82px}.consent-actions{flex-direction:column}}
 
-/* Keep the story in a quiet, centered card throughout every case stage. */
-.story {
+/* The consent form and stories share the same outlined card treatment. */
+.story, .consent-card {
   padding: 26px 30px;
   border: 1px solid #cbd8e1;
   border-radius: 20px;
@@ -14,14 +14,18 @@ button,input,select,textarea{font:inherit}button,.jspsych-btn{border:1px solid #
   box-shadow: 0 10px 28px rgba(38, 63, 82, .09), 0 2px 6px rgba(38, 63, 82, .05);
 }
 .story p:last-child { margin-bottom: 0; }
-.story-action button, .preview-action button, .rating-action button {
+.instructions-page { text-align: center; }
+#jspsych-target button, #jspsych-target .jspsych-btn {
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(38, 63, 82, .07);
-  transition: background-color .18s ease, box-shadow .18s ease;
+  transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
-.story-action button:hover, .preview-action button:hover, .rating-action button:not(:disabled):hover {
-  box-shadow: 0 4px 12px rgba(38, 63, 82, .12);
+#jspsych-target button:not(:disabled):hover, #jspsych-target .jspsych-btn:not(:disabled):hover {
+  background: #e8f2fa;
+  border-color: #6e95b1;
+  box-shadow: 0 4px 12px rgba(38, 63, 82, .14), 0 0 0 3px rgba(213, 231, 244, .45);
 }
+#jspsych-target button:disabled { background: #fff; }
 
 /* Numbered tiles separate the preview sentences without divider rules. */
 .sentence-list { max-width: 790px; margin-inline: auto; display: grid; gap: 12px; }
@@ -69,12 +73,12 @@ button,input,select,textarea{font:inherit}button,.jspsych-btn{border:1px solid #
 }
 .question-card .sentence-text { min-height: 54px; display: flex; align-items: center; justify-content: center; }
 @media(max-width:600px) {
-  .story { padding: 20px 18px; border-radius: 17px; }
+  .story, .consent-card { padding: 20px 18px; border-radius: 17px; }
   .question-card { padding: 20px 16px; border-radius: 17px; }
   .question-card .sentence-text { min-height: 77px; }
   .preview-sentence { padding: 17px 43px; }
   .sentence-number { left: 10px; width: 25px; height: 25px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .story-action button, .preview-action button, .rating-action button { transition: none; }
+  #jspsych-target button, #jspsych-target .jspsych-btn { transition: none; }
 }
