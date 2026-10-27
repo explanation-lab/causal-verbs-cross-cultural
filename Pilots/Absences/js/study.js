@@ -5,7 +5,7 @@
   const review=globalThis.ABSENCE_REVIEW===true;
   const storageKey='causal-verbs-absences-'+config.studyVersion;
   const escape = value => String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let selected, state, jsPsych, currentIndex=0, priorScroll=0, priorCase=null;
+  let selected, state, jsPsych, currentIndex=0, priorScroll=0, priorCase=null, priorStage=null;
   const target=document.getElementById('jspsych-target');
   function persist() { if (!review) localStorage.setItem(storageKey,JSON.stringify(state)); }
   function download(payload,name,type='application/json') {
@@ -53,13 +53,15 @@
     const item=core.material(materials,selected,screen.case);
     let content=storyHTML(item,screen);
     if (screen.stage==='story') return page(content+'<div class="story-action"><button id="stage-continue">Continue</button></div>');
-    if(screen.stage==='preview') content+='<p class="sentence-instruction"><strong>Please carefully read all of the following sentences before rating them.</strong></p>';
-    content+='<ol class="sentence-list">'+item.sentences.map((sentence,index)=> {
-      const active=screen.stage==='rating' && index+1===screen.sentence_position;
-      const masked=screen.stage==='rating' && !active;
-      return `<li class="sentence-slot ${active?'active':''} ${masked?'masked':''}" data-position="${index+1}"${masked?' aria-hidden="true"':''}><span class="sentence-text">${escape(sentence.text)}</span>${active?scale():''}</li>`;
-    }).join('')+'</ol>';
-    if(screen.stage==='preview') content+='<div class="preview-action"><button id="stage-continue">Continue to ratings</button></div>';
+    if(screen.stage==='preview') {
+      content+='<p class="sentence-instruction"><strong>Please carefully read all of the following sentences before rating them.</strong></p>';
+      content+='<ol class="sentence-list">'+item.sentences.map((sentence,index)=>
+        `<li class="sentence-slot preview-sentence" data-position="${index+1}"><span class="sentence-number" aria-hidden="true">${index+1}</span><span class="sentence-text">${escape(sentence.text)}</span></li>`
+      ).join('')+'</ol><div class="preview-action"><button id="stage-continue">Continue to ratings</button></div>';
+    } else {
+      const sentence=item.sentences[screen.sentence_position-1];
+      content+=`<section class="question-card sentence-slot active" data-position="${screen.sentence_position}" aria-label="Sentence ${screen.sentence_position} of 4"><p class="question-step">Sentence ${screen.sentence_position} of 4</p><span class="sentence-text">${escape(sentence.text)}</span>${scale()}</section>`;
+    }
     return page(content);
   }
   function demographics() {
@@ -93,15 +95,12 @@
     }
     if(screen.stage==='rating') {
       const active=document.querySelector('.sentence-slot.active');
-      const previous=active.previousElementSibling;
-      const spotlightStart=previous?previous.getBoundingClientRect().top-active.getBoundingClientRect().top:-20;
-      active.style.setProperty('--spotlight-start',spotlightStart+'px');
       const button=document.getElementById('rating-continue');
       document.querySelectorAll('input[name=naturalness]').forEach(input=>input.onchange=()=>{button.disabled=false;});
       button.onclick=()=>{const input=document.querySelector('input[name=naturalness]:checked');if(input)finish({rating:Number(input.value)});};
       requestAnimationFrame(()=> {
         window.scrollTo(0,priorCase===screen.case?priorScroll:0);
-        if(active.getBoundingClientRect().bottom>window.innerHeight) active.scrollIntoView({block:'end',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+        if(priorStage!=='rating' || priorCase!==screen.case) active.scrollIntoView({block:'nearest',behavior:'auto'});
       });
     } else window.scrollTo(0,0);
     if(screen.stage==='demographics') {
@@ -129,7 +128,7 @@
         delete data.stimulus;
         data.review_mode=review;data.valid_participant_data=!review;data.study_version=config.studyVersion;
         if(state.consented || review) {
-          state.records.push({...data});state.next=index+1;priorCase=screen.case??null;persist();
+          state.records.push({...data});state.next=index+1;priorCase=screen.case??null;priorStage=screen.stage;persist();
         }
       }};
   }

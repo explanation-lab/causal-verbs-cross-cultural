@@ -23,39 +23,58 @@ button,input,select,textarea{font:inherit}button,.jspsych-btn{border:1px solid #
   box-shadow: 0 4px 12px rgba(38, 63, 82, .12);
 }
 
-/* The light moves between list positions while the hidden sentences keep
-   their original space. Only the active sentence and its scale are revealed. */
-.sentence-slot.active { position: relative; isolation: isolate; border-top-color: transparent; }
-.sentence-slot.active::before {
-  content: '';
+/* Numbered tiles separate the preview sentences without divider rules. */
+.sentence-list { max-width: 790px; margin-inline: auto; display: grid; gap: 12px; }
+.preview-sentence {
+  position: relative;
+  padding: 18px 50px;
+  border: 1px solid #d0dce5;
+  border-radius: 13px;
+  background: #fbfdff;
+  box-shadow: 0 2px 6px rgba(38, 63, 82, .045);
+}
+.sentence-number {
   position: absolute;
-  inset: 2px -14px -2px;
-  z-index: -1;
-  pointer-events: none;
-  border: 1px solid #c3d7e5;
-  border-radius: 18px;
-  background: radial-gradient(ellipse at 50% 15%, #f0f7fc 0%, #f9fcfe 65%, #fff 100%);
-  box-shadow: 0 10px 30px rgba(43, 88, 118, .11), 0 0 0 4px rgba(224, 237, 246, .28);
-  animation: spotlight-arrive .55s cubic-bezier(.2, .7, .2, 1) both;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 8px;
+  background: #e6eef5;
+  color: #436680;
+  font-size: 13px;
+  font-weight: 600;
 }
-.sentence-slot.active .sentence-text, .sentence-slot.active .rating-panel {
-  animation: rating-reveal .42s ease-out both;
+/* All four questions occupy this same card immediately below the story. */
+.question-card {
+  width: 100%;
+  max-width: 790px;
+  margin: 0 auto;
+  padding: 24px 30px;
+  border: 2px solid #5985a8;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f3f8fd, #fff);
+  box-shadow: 0 16px 38px rgba(43, 82, 117, .18), 0 4px 12px rgba(43, 82, 117, .1);
 }
-.sentence-slot.active .rating-panel { animation-delay: .08s; }
-@keyframes spotlight-arrive {
-  from { opacity: .2; transform: translateY(var(--spotlight-start, -20px)); }
-  to { opacity: 1; transform: translateY(0); }
+.question-step {
+  color: #3c6484;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-align: center;
+  margin: 0 0 14px;
 }
-@keyframes rating-reveal {
-  from { opacity: 0; clip-path: inset(0 0 100% 0); }
-  to { opacity: 1; clip-path: inset(0); }
-}
+.question-card .sentence-text { min-height: 54px; display: flex; align-items: center; justify-content: center; }
 @media(max-width:600px) {
   .story { padding: 20px 18px; border-radius: 17px; }
-  .sentence-slot.active::before { inset-inline: -9px; }
+  .question-card { padding: 20px 16px; border-radius: 17px; }
+  .question-card .sentence-text { min-height: 77px; }
+  .preview-sentence { padding: 17px 43px; }
+  .sentence-number { left: 10px; width: 25px; height: 25px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .sentence-slot.active::before, .sentence-slot.active .sentence-text,
-  .sentence-slot.active .rating-panel { animation: none; }
   .story-action button, .preview-action button, .rating-action button { transition: none; }
 }

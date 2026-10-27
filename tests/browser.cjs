@@ -39,7 +39,8 @@ let browser,phase='starting',lastPage;
           }
           if(stage==='rating') {
             assert.equal(await page.locator('.sentence-slot.active').count(),1);
-            assert.equal(await page.locator('.masked').count(),3);
+            assert.equal(await page.locator('.sentence-slot').count(),1);
+            assert.equal(await page.locator('.sentence-instruction').count(),0);
             assert.equal(await page.locator('input[name=naturalness]').count(),7);
             assert(await page.locator('#rating-continue').isDisabled());
             await page.locator('input[name=naturalness][value="4"]').check();
@@ -68,21 +69,19 @@ let browser,phase='starting',lastPage;
   await page.screenshot({path:path.join(results,'review-story.png'),fullPage:true});
   await page.click('#stage-continue');
   await page.waitForSelector('.sentence-slot');
-  const previewSentenceTops=await page.locator('.sentence-text').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().top+scrollY));
   await page.screenshot({path:path.join(results,'review-sentences.png'),fullPage:true});
   await page.click('#stage-continue');
   const topPositions=[];
-  let ratingOffset;
   for(let i=0;i<4;i++) {
     await page.waitForSelector(`.sentence-slot.active[data-position="${i+1}"]`);
-    const top=await page.locator('.active .sentence-text').evaluate(n=>n.getBoundingClientRect().top+scrollY);
+    const top=await page.locator('.question-card').evaluate(n=>n.getBoundingClientRect().top+scrollY);
     topPositions.push(top);
-    if(i===0) ratingOffset=top-previewSentenceTops[i];
-    assert(Math.abs(top-previewSentenceTops[i]-ratingOffset)<2,'Sentence positions stay fixed after the preview-only instruction is removed.');
+    assert(Math.abs(top-topPositions[0])<2,'All four ratings use the same question-card position.');
+    const widths=await page.evaluate(()=>({story:document.querySelector('.story').getBoundingClientRect().width,question:document.querySelector('.question-card').getBoundingClientRect().width}));
+    assert(Math.abs(widths.story-widths.question)<1,'Story and question cards have matching widths.');
     if(i===0||i===3)await page.screenshot({path:path.join(results,`review-rating-${i+1}.png`),fullPage:true});
     await page.locator('input[name=naturalness][value="5"]').check();await page.click('#rating-continue');
   }
-  assert(topPositions.every((value,i)=>i===0||value>topPositions[i-1]));
   await page.reload();await page.waitForFunction(()=>absenceStudy);
   assert.deepEqual(await page.evaluate(()=>absenceStudy.assignment),a);
   // Mobile layout and export.
@@ -142,5 +141,5 @@ let browser,phase='starting',lastPage;
   assert.equal(await decline.locator('.story').count(),0);
   assert.deepEqual(errors,[]);
   await browser.close();
-  console.log('PASS: all materials and preview stages; working review controls; fixed sentence positions; mobile layout; review isolation; four complete participant runs; reload recovery; JSON/CSV export; consent refusal.');
+  console.log('PASS: all materials and preview stages; working review controls; stationary question cards matching story width; mobile layout; review isolation; four complete participant runs; reload recovery; JSON/CSV export; consent refusal.');
 })().catch(async error=>{console.error('Failed phase:',phase,error);if(lastPage&&!lastPage.isClosed()){console.error(await lastPage.locator('body').innerText());await lastPage.screenshot({path:path.join(results,'failure.png'),fullPage:true});}await browser?.close();process.exitCode=1;});

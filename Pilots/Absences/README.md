@@ -29,7 +29,7 @@ Every target uses the assigned condition's predicate. The prompt is “How natur
 1. Adult participation consent, then instructions.
 2. A bold reading instruction above the centered story and its single outcome; Continue.
 3. The same story plus the instruction to read all four sentences. All four appear in the participant's fixed order; Continue to ratings.
-4. Four rating screens. Only the active sentence is visible, in bold. The other sentences are masked but retain their space. The scale and Continue button sit beneath the active sentence. The active sentence moves down through its original list positions. A response is required before continuing.
+4. Four rating screens. One sentence at a time appears in bold in a stationary question card directly beneath the story, with the same width as the story card. A blue outline, stronger shadow, and sentence counter distinguish the question card. Its scale and Continue button remain centered. The preview reading instruction is removed. A response is required before continuing.
 5. Repeat for all four stories, then optional demographics/language background and feedback.
 6. Save completion, with retry and JSON/CSV download options.
 
@@ -102,4 +102,4 @@ node tests/browser.cjs
 
 The browser check requires Playwright available on Node's package path and the local server running. Set `PILOT_URL` to a separate QA server and `--database /tmp/absences-qa.sqlite3` to keep synthetic assignments out of the research database. `CHROMIUM_PATH` can select an already-installed Chromium binary. Screenshots go to ignored `test-results/`.
 
-Core checks cover all alternative combinations, single outcomes, 16 ratings and the English water-level correction. Service checks cover concurrent balance, stable assignments, review rejection, missing/duplicate ratings and save retries. Browser checks cover every material and phase, researcher navigation, masking and fixed vertical positions, mobile layout, consent refusal, full participant completion, reload recovery and exports.
+Core checks cover all alternative combinations, single outcomes, 16 ratings and the English water-level correction. Service checks cover concurrent balance, stable assignments, review rejection, missing/duplicate ratings and save retries. Browser checks cover every material and phase, researcher navigation, the stationary question card and its matching story width, mobile layout, consent refusal, full participant completion, reload recovery and exports.
