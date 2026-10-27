@@ -134,13 +134,12 @@ def handler(store, factivity_store=None, chains_store=None):
         def do_GET(self):
             path = unquote(urlsplit(self.path).path)
             if path == '/':
-                self.send_response(302)
-                self.send_header('Location', '/Pilots/Absences/preview.html')
-                self.end_headers()
-                return
+                self.path = '/index.html'
+                path = '/index.html'
             resolved = Path(self.translate_path(path)).resolve()
             public = [ROOT / 'Pilots' / name for name in ('Absences', 'Factivity', 'Chains')]
-            if not any(resolved.is_relative_to(folder) for folder in public) or not resolved.is_file():
+            hub_files = {ROOT / 'index.html', ROOT / 'review.css', ROOT / 'dist/causal-verbs-pilots-review.zip'}
+            if (resolved not in hub_files and not any(resolved.is_relative_to(folder) for folder in public)) or not resolved.is_file():
                 self.send_error(404)
                 return
             super().do_GET()

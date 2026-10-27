@@ -13,7 +13,7 @@
       document.getElementById('review-status').textContent=`${study.assignment.condition==='thick'?'Thick':'Thin'} · Stories: ${study.assignment.case_order.join(' → ')} · Sentence order: ${study.assignment.sentence_order.map(r=>core.LABELS[r]).join(' → ')} · ${Object.entries(study.assignment.variants).map(([k,v])=>k+': '+v).join('; ')}`;
     }
     function navigate(index) {
-      const url=new URL(location.href);url.search='';url.searchParams.set('screen',index);url.searchParams.set('autostart','1');location.assign(url);
+      const url=new URL(location.href);url.search='';if(url.protocol==='file:')url.searchParams.set('assignment',JSON.stringify(study.assignment));url.searchParams.set('screen',index);url.searchParams.set('autostart','1');location.assign(url);
     }
     function update() {
       const next=core.assignment(condition.value,Object.fromEntries(Object.entries(variants).map(([k,v])=>[k,v.value])));

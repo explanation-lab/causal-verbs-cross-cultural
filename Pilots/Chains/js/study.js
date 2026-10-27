@@ -163,9 +163,9 @@
       const params=new URLSearchParams(location.search);
       if(params.has('PROLIFIC_PID') || params.has('participant')) throw new Error('Use the participant entry for participant sessions.');
       let saved=null;
-      try{saved=JSON.parse(sessionStorage.getItem(storageKey+'-review'));}catch{}
+      try{saved=JSON.parse(params.get('assignment') || sessionStorage.getItem(storageKey+'-review'));}catch{}
       selected=core.validateAssignment(saved || core.assignment('thick'));
-      sessionStorage.setItem(storageKey+'-review',JSON.stringify(selected));
+      try{sessionStorage.setItem(storageKey+'-review',JSON.stringify(selected));}catch{}
       state={id:'review',consented:false,records:[],next:0,complete:false};
     } else {
       try {state=JSON.parse(localStorage.getItem(storageKey));}catch{}
@@ -176,7 +176,7 @@
       state.assignment=selected;persist();
     }
     globalThis.chainsStudy={review,assignment:selected,state,run,exportData,get screens(){return core.screens(selected);},get currentIndex(){return currentIndex;},
-      setReviewAssignment(value){if(!review)throw new Error('Review only.');selected=core.validateAssignment(value);this.assignment=selected;sessionStorage.setItem(storageKey+'-review',JSON.stringify(selected));}};
+      setReviewAssignment(value){if(!review)throw new Error('Review only.');selected=core.validateAssignment(value);this.assignment=selected;try{sessionStorage.setItem(storageKey+'-review',JSON.stringify(selected));}catch{}}};
     if(review) globalThis.dispatchEvent(new Event('chains-ready'));else run(state.next);
   }
   start().catch(error=>{target.innerHTML=page(`<h1>Unable to open the study</h1><p class="error">${escape(error.message)}</p><p>Please reopen your study link or contact the researcher.</p>${review?'':'<p><a href="preview.html">Researcher preview</a></p>'}`);console.error(error);});

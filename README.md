@@ -4,7 +4,7 @@ English pilots for comparing thick causal verbs with alternating thin verbs.
 
 Implemented pilots are **Pilots/Absences**, **Pilots/Factivity**, and **Pilots/Chains**.
 
-## Open the Absences review
+## Open the review hub
 
 From the repository root, run:
 
@@ -12,7 +12,9 @@ From the repository root, run:
 python3 tools/serve.py --port 8765
 ```
 
-Open [researcher review](http://127.0.0.1:8765/Pilots/Absences/preview.html).
+Open the [main review page](http://127.0.0.1:8765/). It links to all three pilots and explains the alternative materials. Every pilot has persistent All pilots / Absences / Factivity / Chains navigation above the review controls.
+
+Open [Absences researcher review](http://127.0.0.1:8765/Pilots/Absences/preview.html).
 The [participant entry](http://127.0.0.1:8765/Pilots/Absences/index.html) uses the local allocation and response service.
 
 The [Factivity review](http://127.0.0.1:8765/Pilots/Factivity/preview.html) and [Factivity participant entry](http://127.0.0.1:8765/Pilots/Factivity/index.html) run on the same server with separate assignments and response storage. See [Factivity design and operation notes](Pilots/Factivity/README.md).
@@ -24,3 +26,13 @@ The preview also works on an ordinary static HTTP server. The participant entry 
 This repository is prepared for local review. No recruitment, public hosting, Study Console registration, or production deployment has been configured.
 
 See [the Absences design and operation notes](Pilots/Absences/README.md) for materials, allocation, consent, data, and checks.
+
+## Share a review ZIP
+
+```sh
+python3 tools/package_review.py
+```
+
+This creates `dist/causal-verbs-pilots-review.zip`. Its top level contains `index.html`: collaborators extract all files and double-click that file to open the hub. The package includes all review pages, scripts, styles, fonts and third-party notices, with no installation or server required. It excludes participant entries, data, the source workbook, Git history and development tools. `READ_ME_FIRST.txt` gives brief opening instructions; `EMAIL_NOTE.txt` contains the collaborator email overview. A manifest records file hashes and the source revision.
+
+The package builder verifies every local HTML link, script and stylesheet reference and tests ZIP integrity. Run `node tests/review-portability.cjs` to check that all three review runtimes tolerate unavailable browser storage and preserve review assignments through local-file navigation. For file URLs, assignments travel in the review URL if storage is restricted. Participant behavior and data submission are unchanged.
