@@ -20,10 +20,20 @@ VERSION = 'absences-english-1.0.0'
 CASES = ['beach', 'driveway', 'rocket', 'cellar']
 VARIANTS = {'beach': ['change', 'dry_out'], 'driveway': ['weaken', 'degrade'], 'rocket': ['activate'], 'cellar': ['increase', 'dampen']}
 ROLES = ['absence_cause', 'absence_lexical', 'direct_cause', 'direct_lexical']
+ABSENCES = {'version': VERSION, 'cases': CASES, 'variants': VARIANTS, 'roles': ROLES, 'sample_both_conditions': False}
+FACTIVITY = {
+    'version': 'factivity-english-1.0.0',
+    'cases': ['sewer_system', 'phone', 'scooter'],
+    'variants': {'sewer_system': ['stop_working'], 'phone': ['die_kill', 'turn_off'],
+                 'scooter': ['stop', 'power_down', 'disconnect_battery', 'disconnect_network']},
+    'roles': ['fact_cause', 'fact_lexical', 'direct_cause', 'direct_lexical'],
+    'sample_both_conditions': True,
+}
 RANDOM = random.SystemRandom()
 
 class Store:
-    def __init__(self, path):
+    def __init__(self, path, design=None):
+        self.design = design or ABSENCES
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
@@ -42,16 +52,16 @@ class Store:
             counts = {c: sum(a['condition'] == c for a in assigned) for c in ('thick', 'thin')}
             minimum = min(counts.values())
             condition = RANDOM.choice([c for c in counts if counts[c] == minimum])
-            thin = [a for a in assigned if a['condition'] == 'thin']
+            condition_group = [a for a in assigned if a['condition'] == condition]
             variants = {}
-            for name, options in VARIANTS.items():
-                if condition == 'thick':
+            for name, options in self.design['variants'].items():
+                if condition == 'thick' and not self.design['sample_both_conditions']:
                     variants[name] = options[0]
                     continue
-                counts = {v: sum(a['variants'][name] == v for a in thin) for v in options}
+                counts = {v: sum(a['variants'][name] == v for a in condition_group) for v in options}
                 minimum = min(counts.values())
                 variants[name] = RANDOM.choice([v for v in counts if counts[v] == minimum])
-            case_order, sentence_order = list(CASES), list(ROLES)
+            case_order, sentence_order = list(self.design['cases']), list(self.design['roles'])
             RANDOM.shuffle(case_order)
             RANDOM.shuffle(sentence_order)
             assignment = {'condition': condition, 'variants': variants, 'case_order': case_order, 'sentence_order': sentence_order}
@@ -62,7 +72,7 @@ class Store:
     def save(self, payload):
         if payload.get('review_mode') is not False or payload.get('valid_participant_data') is not True:
             raise ValueError('Review responses cannot be saved as participant data.')
-        if payload.get('study_version') != VERSION or payload.get('consented') is not True or payload.get('complete') is not True:
+        if payload.get('study_version') != self.design['version'] or payload.get('consented') is not True or payload.get('complete') is not True:
             raise ValueError('Consent and a complete, current study are required.')
         with self.connect() as db:
             row = db.execute('SELECT assignment,payload FROM sessions WHERE session_id=?', (payload.get('session_id'),)).fetchone()
@@ -80,7 +90,8 @@ class Store:
                         for role_index, role in enumerate(assignment['sentence_order'])]
             actual = [(r.get('case'), r.get('role'), r.get('case_position'), r.get('sentence_position')) for r in ratings]
             if actual != expected:
-                raise ValueError('Exactly the 16 assigned ratings must be completed in order.')
+                count = len(self.design['cases']) * len(self.design['roles'])
+                raise ValueError(f'Exactly the {count} assigned ratings must be completed in order.')
             for rating in ratings:
                 value, rt = rating.get('rating'), rating.get('rt')
                 if type(value) is not int or not 1 <= value <= 7:
@@ -102,7 +113,7 @@ class Store:
             db.execute('UPDATE sessions SET payload=?,completed_at=? WHERE session_id=?',
                        (json.dumps(payload, ensure_ascii=False), datetime.now(timezone.utc).isoformat(), payload['session_id']))
 
-def handler(store):
+def handler(store, factivity_store=None):
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(ROOT), **kwargs)
@@ -119,8 +130,8 @@ def handler(store):
                 self.end_headers()
                 return
             resolved = Path(self.translate_path(path)).resolve()
-            public = ROOT / 'Pilots' / 'Absences'
-            if not resolved.is_relative_to(public) or not resolved.is_file():
+            public = [ROOT / 'Pilots' / name for name in ('Absences', 'Factivity')]
+            if not any(resolved.is_relative_to(folder) for folder in public) or not resolved.is_file():
                 self.send_error(404)
                 return
             super().do_GET()
@@ -152,12 +163,20 @@ def handler(store):
                 session_id = body.get('session_id', '')
                 if not isinstance(session_id, str) or not re.fullmatch(r'[a-f0-9-]{36}', session_id):
                     raise ValueError('Invalid session identifier.')
-                if self.path == '/api/assign':
-                    if body.get('study_version') != VERSION:
+                route = self.path
+                active_store = store
+                if route.startswith('/api/factivity/'):
+                    if factivity_store is None:
+                        self.respond(404, {'error': 'Factivity is not configured.'})
+                        return
+                    active_store = factivity_store
+                    route = route.replace('/api/factivity/', '/api/', 1)
+                if route == '/api/assign':
+                    if body.get('study_version') != active_store.design['version']:
                         raise ValueError('Study version mismatch.')
-                    self.respond(200, {'assignment': store.allocate(session_id)})
-                elif self.path == '/api/save':
-                    store.save(body)
+                    self.respond(200, {'assignment': active_store.allocate(session_id)})
+                elif route == '/api/save':
+                    active_store.save(body)
                     self.respond(200, {'saved': True})
                 else:
                     self.respond(404, {'error': 'Unknown endpoint.'})
@@ -172,11 +191,14 @@ def main():
     parser.add_argument('--port', type=int, default=8765)
     parser.add_argument('--bind', default='127.0.0.1')
     parser.add_argument('--database', type=Path, default=ROOT / 'data/absences.sqlite3')
+    parser.add_argument('--factivity-database', type=Path, default=ROOT / 'data/factivity.sqlite3')
     args = parser.parse_args()
-    server = ThreadingHTTPServer((args.bind, args.port), handler(Store(args.database)))
+    server = ThreadingHTTPServer((args.bind, args.port), handler(Store(args.database), Store(args.factivity_database, FACTIVITY)))
     print(f'Researcher review: http://{args.bind}:{args.port}/Pilots/Absences/preview.html', flush=True)
     print(f'Participant entry: http://{args.bind}:{args.port}/Pilots/Absences/index.html', flush=True)
     print(f'Local database: {args.database}', flush=True)
+    print(f'Factivity review: http://{args.bind}:{args.port}/Pilots/Factivity/preview.html', flush=True)
+    print(f'Factivity database: {args.factivity_database}', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
