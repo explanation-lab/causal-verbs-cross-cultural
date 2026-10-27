@@ -4,3 +4,58 @@ button,input,select,textarea{font:inherit}button,.jspsych-btn{border:1px solid #
 .jspsych-display-element{font-size:18px;font-family:inherit;overflow:visible}.jspsych-content-wrapper{display:block}.jspsych-content{max-width:none;width:100%;margin:0;text-align:center}#jspsych-target{min-height:70vh}.page{width:min(100%,850px);padding:28px 28px 54px;margin:0 auto;text-align:left}.simple-page{max-width:760px}h1{font-size:28px;line-height:1.25;margin:0 0 20px}h2{font-size:22px}p{margin:0 0 18px}.story-block{text-align:center;margin:0 auto 24px;max-width:790px}.read-instruction{display:block;font-weight:700;margin:0 0 18px}.story{margin:0;line-height:1.7}.story p{margin:0 0 12px}.case-progress{text-align:center;color:var(--muted);font-size:14px;margin-bottom:12px}.story-action{text-align:center;margin-top:26px}.sentence-instruction{text-align:center;font-size:17px;margin:24px 0 18px}.sentence-list{list-style:none;padding:0;margin:0}.sentence-slot{padding:12px 0;min-height:70px;border-top:1px solid var(--line)}.sentence-text{display:block;text-align:center;line-height:1.5;min-height:27px}.masked .sentence-text{visibility:hidden}.sentence-slot.active .sentence-text{font-weight:700}.rating-panel{padding:16px 0 8px}.rating-question{text-align:center;font-size:17px;margin:0 0 14px}.scale{border:0;padding:0;margin:0}.scale legend{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}.scale-options{display:flex;justify-content:space-between;gap:8px;max-width:540px;margin-inline:auto}.scale-options label{display:flex;flex:1;flex-direction:column-reverse;align-items:center;padding:5px 4px;gap:5px;cursor:pointer;border-radius:5px}.scale-options label:has(input:checked){background:#e1eef5;font-weight:700}.scale input{width:20px;height:20px;accent-color:var(--accent)}.scale-anchors{display:flex;justify-content:space-between;max-width:540px;font-size:14px;margin:5px auto 0;color:var(--muted)}.rating-action{margin-top:18px;text-align:center}.preview-action{text-align:center;margin:22px 0}.field{margin:0 0 22px}.field label,.field legend{display:block;font-weight:600;margin-bottom:7px}.field input[type=text],.field input[type=number],.field textarea,.field select{width:100%;padding:8px 10px;border:1px solid #aab8c4;border-radius:4px;background:white}.field input[type=number]{max-width:160px}.field .radio-label{font-weight:400;display:inline-block;margin-right:20px}.optional{font-weight:400;color:var(--muted);font-size:14px}.consent-card{background:#b8d4e8;border-radius:4px;padding:28px 32px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6}.consent-card h1{text-align:center;text-transform:uppercase;font-size:19px;letter-spacing:.04em}.consent-actions{text-align:center;margin-top:22px;display:flex;justify-content:center;gap:12px}.notice{background:var(--wash);border:1px solid var(--line);padding:15px;border-radius:6px}.error{color:#a32323}.downloads{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}.saved{color:#24623d}
 #review-panel{position:sticky;top:0;z-index:100;background:#eef3f6;border-bottom:1px solid #cad8e1;padding:10px 20px;font:14px/1.5 system-ui;text-align:left}#review-panel button{font-size:14px;padding:5px 10px;margin:3px 5px 3px 0}#review-panel select{font-size:14px;padding:4px;max-width:100%;min-width:0}#review-panel label{display:inline-flex;align-items:center;gap:7px;margin:5px 14px 5px 0;min-width:0}#review-panel p{margin:6px 0}#review-panel .review-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}#review-status{font-size:13px;color:#405464}.review-entry{max-width:800px;margin:30px auto;padding:24px}.review-entry h1{font-size:27px}#jspsych-progressbar-container{position:relative;background:#fafcfd;border-color:var(--line)}
 @media(max-width:600px){body,.jspsych-display-element{font-size:17px}.page{padding:22px 18px 40px}.story{line-height:1.6}.consent-card{padding:22px 18px}.scale-options{gap:2px}.scale-options label{padding:5px 1px}.scale-anchors{font-size:12px}#review-panel{position:relative;padding:10px 12px}#review-panel label{display:flex;margin:6px 0}#review-panel .review-row{display:block}.sentence-slot{min-height:82px}.consent-actions{flex-direction:column}}
+
+/* Keep the story in a quiet, centered card throughout every case stage. */
+.story {
+  padding: 26px 30px;
+  border: 1px solid #cbd8e1;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fff, #f9fbfd);
+  box-shadow: 0 10px 28px rgba(38, 63, 82, .09), 0 2px 6px rgba(38, 63, 82, .05);
+}
+.story p:last-child { margin-bottom: 0; }
+.story-action button, .preview-action button, .rating-action button {
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(38, 63, 82, .07);
+  transition: background-color .18s ease, box-shadow .18s ease;
+}
+.story-action button:hover, .preview-action button:hover, .rating-action button:not(:disabled):hover {
+  box-shadow: 0 4px 12px rgba(38, 63, 82, .12);
+}
+
+/* The light moves between list positions while the hidden sentences keep
+   their original space. Only the active sentence and its scale are revealed. */
+.sentence-slot.active { position: relative; isolation: isolate; border-top-color: transparent; }
+.sentence-slot.active::before {
+  content: '';
+  position: absolute;
+  inset: 2px -14px -2px;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid #c3d7e5;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 50% 15%, #f0f7fc 0%, #f9fcfe 65%, #fff 100%);
+  box-shadow: 0 10px 30px rgba(43, 88, 118, .11), 0 0 0 4px rgba(224, 237, 246, .28);
+  animation: spotlight-arrive .55s cubic-bezier(.2, .7, .2, 1) both;
+}
+.sentence-slot.active .sentence-text, .sentence-slot.active .rating-panel {
+  animation: rating-reveal .42s ease-out both;
+}
+.sentence-slot.active .rating-panel { animation-delay: .08s; }
+@keyframes spotlight-arrive {
+  from { opacity: .2; transform: translateY(var(--spotlight-start, -20px)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes rating-reveal {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@media(max-width:600px) {
+  .story { padding: 20px 18px; border-radius: 17px; }
+  .sentence-slot.active::before { inset-inline: -9px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .sentence-slot.active::before, .sentence-slot.active .sentence-text,
+  .sentence-slot.active .rating-panel { animation: none; }
+  .story-action button, .preview-action button, .rating-action button { transition: none; }
+}

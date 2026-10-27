@@ -92,13 +92,16 @@
       };
     }
     if(screen.stage==='rating') {
+      const active=document.querySelector('.sentence-slot.active');
+      const previous=active.previousElementSibling;
+      const spotlightStart=previous?previous.getBoundingClientRect().top-active.getBoundingClientRect().top:-20;
+      active.style.setProperty('--spotlight-start',spotlightStart+'px');
       const button=document.getElementById('rating-continue');
       document.querySelectorAll('input[name=naturalness]').forEach(input=>input.onchange=()=>{button.disabled=false;});
       button.onclick=()=>{const input=document.querySelector('input[name=naturalness]:checked');if(input)finish({rating:Number(input.value)});};
       requestAnimationFrame(()=> {
         window.scrollTo(0,priorCase===screen.case?priorScroll:0);
-        const active=document.querySelector('.sentence-slot.active');
-        if(active.getBoundingClientRect().bottom>window.innerHeight) active.scrollIntoView({block:'end'});
+        if(active.getBoundingClientRect().bottom>window.innerHeight) active.scrollIntoView({block:'end',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
       });
     } else window.scrollTo(0,0);
     if(screen.stage==='demographics') {
