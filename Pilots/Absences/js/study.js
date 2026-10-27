@@ -57,7 +57,7 @@
       content+='<p class="sentence-instruction"><strong>Please carefully read all of the following sentences before rating them.</strong></p>';
       content+='<ol class="sentence-list">'+item.sentences.map((sentence,index)=>
         `<li class="sentence-slot preview-sentence" data-position="${index+1}"><span class="sentence-number" aria-hidden="true">${index+1}</span><span class="sentence-text">${escape(sentence.text)}</span></li>`
-      ).join('')+'</ol><div class="preview-action"><button id="stage-continue">Continue to ratings</button></div>';
+      ).join('')+'</ol><div class="preview-action"><button id="stage-continue">Continue</button></div>';
     } else {
       const sentence=item.sentences[screen.sentence_position-1];
       content+=`<section class="question-card sentence-slot active" data-position="${screen.sentence_position}" aria-label="Sentence rating"><p class="rating-question" id="naturalness-question">How natural is this sentence as a description of the situation?</p><span class="sentence-text">${escape(sentence.text)}</span>${scale()}</section>`;
@@ -78,7 +78,7 @@
   function html(screen) {
     if(screen.case) return caseHTML(screen);
     if(screen.stage==='consent') return consent();
-    if(screen.stage==='instructions') return page(`<h1>Instructions</h1><p>${escape(materials.shared.instructions_intro)}</p><p>For each story, you'll read four sentences about what happened, and then you'll rate each sentence.</p><p>When you're ready to begin, click Begin Study below.</p><button id="stage-continue">Begin Study</button>`,'simple-page instructions-page');
+    if(screen.stage==='instructions') return page(`<h1>Instructions</h1><p>${escape(materials.shared.instructions_intro)}</p><p>For each story, you'll read four sentences about what happened, and then you'll rate each sentence.</p><p>When you're ready to begin, click Begin below.</p><button id="stage-continue">Begin</button>`,'simple-page instructions-page');
     if(screen.stage==='demographics') return demographics();
     return page('<h1>Feedback</h1><form id="feedback-form"><div class="field"><label for="feedback">Do you have any feedback about any part of this study? <span class="optional">(optional)</span></label><textarea id="feedback" name="feedback" rows="5"></textarea></div><button type="submit">Finish</button></form>','simple-page');
   }
