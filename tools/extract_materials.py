@@ -1,4 +1,4 @@
-"""Read English omission or factivity rows without modifying the workbook."""
+"""Read English pilot materials without modifying the workbook."""
 import argparse
 import hashlib
 import json
@@ -7,7 +7,7 @@ import openpyxl
 
 parser = argparse.ArgumentParser()
 parser.add_argument('workbook', type=Path)
-parser.add_argument('--study', choices=('omission', 'fact'), default='omission')
+parser.add_argument('--study', choices=('omission', 'fact', 'chain'), default='omission')
 args = parser.parse_args()
 workbook = openpyxl.load_workbook(args.workbook, read_only=True, data_only=True)
 rows = list(workbook['English source'].values)
@@ -38,8 +38,9 @@ output = {'source': {'file': args.workbook.name, 'sha256': hashlib.sha256(args.w
         'sheet': 'English source', 'filter': {'Study': args.study, 'Thin-pair type': 'alternating'},
         'edits': ['English cellar/increase thin targets consistently use the level of water. Source workbook and other languages are unchanged.'] if args.study == 'omission' else []},
     'shared': shared, 'cases': cases}
-pilot = 'Absences' if args.study == 'omission' else 'Factivity'
-namespace = 'AbsenceMaterials' if args.study == 'omission' else 'FactivityMaterials'
+pilot, namespace = {'omission': ('Absences', 'AbsenceMaterials'),
+                    'fact': ('Factivity', 'FactivityMaterials'),
+                    'chain': ('Chains', 'ChainsMaterials')}[args.study]
 destination = Path(__file__).resolve().parents[1] / f'Pilots/{pilot}/js/materials.js'
 destination.parent.mkdir(parents=True, exist_ok=True)
 destination.write_text('// Generated from English source; see tools/extract_materials.py.\n'

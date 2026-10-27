@@ -1,4 +1,4 @@
-"""Export completed Absences or Factivity records from the local pilot database."""
+"""Export completed records from a local pilot database."""
 import argparse
 import csv
 import json
@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--study', choices=('absences', 'factivity'), default='absences')
+parser.add_argument('--study', choices=('absences', 'factivity', 'chains'), default='absences')
 parser.add_argument('--database', type=Path)
 parser.add_argument('--output', type=Path, default=ROOT / 'data/exports')
 args = parser.parse_args()

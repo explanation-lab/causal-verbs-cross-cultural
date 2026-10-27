@@ -29,6 +29,15 @@ FACTIVITY = {
     'roles': ['fact_cause', 'fact_lexical', 'direct_cause', 'direct_lexical'],
     'sample_both_conditions': True,
 }
+CHAINS = {
+    'version': 'chains-english-1.0.0',
+    'cases': ['frame', 'railing', 'street_sign', 'wine'],
+    'variants': {'frame': ['deform', 'loosen'], 'railing': ['detach', 'separate'],
+                 'street_sign': ['activate_beacon', 'disconnect_beacon', 'disconnect_sign'],
+                 'wine': ['empty_glass', 'decrease_glass_amount', 'decrease_party_supply']},
+    'roles': ['distal_cause', 'distal_lexical', 'proximal_cause', 'proximal_lexical'],
+    'sample_both_conditions': True,
+}
 RANDOM = random.SystemRandom()
 
 class Store:
@@ -113,7 +122,7 @@ class Store:
             db.execute('UPDATE sessions SET payload=?,completed_at=? WHERE session_id=?',
                        (json.dumps(payload, ensure_ascii=False), datetime.now(timezone.utc).isoformat(), payload['session_id']))
 
-def handler(store, factivity_store=None):
+def handler(store, factivity_store=None, chains_store=None):
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(ROOT), **kwargs)
@@ -130,7 +139,7 @@ def handler(store, factivity_store=None):
                 self.end_headers()
                 return
             resolved = Path(self.translate_path(path)).resolve()
-            public = [ROOT / 'Pilots' / name for name in ('Absences', 'Factivity')]
+            public = [ROOT / 'Pilots' / name for name in ('Absences', 'Factivity', 'Chains')]
             if not any(resolved.is_relative_to(folder) for folder in public) or not resolved.is_file():
                 self.send_error(404)
                 return
@@ -165,12 +174,15 @@ def handler(store, factivity_store=None):
                     raise ValueError('Invalid session identifier.')
                 route = self.path
                 active_store = store
-                if route.startswith('/api/factivity/'):
-                    if factivity_store is None:
-                        self.respond(404, {'error': 'Factivity is not configured.'})
-                        return
-                    active_store = factivity_store
-                    route = route.replace('/api/factivity/', '/api/', 1)
+                for pilot, pilot_store in [('factivity', factivity_store), ('chains', chains_store)]:
+                    prefix = f'/api/{pilot}/'
+                    if route.startswith(prefix):
+                        if pilot_store is None:
+                            self.respond(404, {'error': f'{pilot.title()} is not configured.'})
+                            return
+                        active_store = pilot_store
+                        route = route.replace(prefix, '/api/', 1)
+                        break
                 if route == '/api/assign':
                     if body.get('study_version') != active_store.design['version']:
                         raise ValueError('Study version mismatch.')
@@ -192,13 +204,16 @@ def main():
     parser.add_argument('--bind', default='127.0.0.1')
     parser.add_argument('--database', type=Path, default=ROOT / 'data/absences.sqlite3')
     parser.add_argument('--factivity-database', type=Path, default=ROOT / 'data/factivity.sqlite3')
+    parser.add_argument('--chains-database', type=Path, default=ROOT / 'data/chains.sqlite3')
     args = parser.parse_args()
-    server = ThreadingHTTPServer((args.bind, args.port), handler(Store(args.database), Store(args.factivity_database, FACTIVITY)))
+    server = ThreadingHTTPServer((args.bind, args.port), handler(Store(args.database), Store(args.factivity_database, FACTIVITY), Store(args.chains_database, CHAINS)))
     print(f'Researcher review: http://{args.bind}:{args.port}/Pilots/Absences/preview.html', flush=True)
     print(f'Participant entry: http://{args.bind}:{args.port}/Pilots/Absences/index.html', flush=True)
     print(f'Local database: {args.database}', flush=True)
     print(f'Factivity review: http://{args.bind}:{args.port}/Pilots/Factivity/preview.html', flush=True)
     print(f'Factivity database: {args.factivity_database}', flush=True)
+    print(f'Chains review: http://{args.bind}:{args.port}/Pilots/Chains/preview.html', flush=True)
+    print(f'Chains database: {args.chains_database}', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
