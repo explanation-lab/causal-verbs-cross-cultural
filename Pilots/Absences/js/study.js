@@ -76,7 +76,7 @@
   function html(screen) {
     if(screen.case) return caseHTML(screen);
     if(screen.stage==='consent') return consent();
-    if(screen.stage==='instructions') return page(`<h1>Stories and sentences</h1><p>${escape(materials.shared.instructions_intro)}</p><p>For each story, first read all four sentences. You will then rate each sentence separately, from top to bottom.</p><p>Please judge how natural each sentence sounds as a description of the situation. Use a scale from 1 (Very unnatural) to 7 (Very natural).</p><p>${escape(materials.shared.instructions_read_carefully)}</p><button id="stage-continue">Begin study</button>`,'simple-page');
+    if(screen.stage==='instructions') return page(`<h1>Instructions</h1><p>${escape(materials.shared.instructions_intro)}</p><p>For each story, you'll read four sentences about what happened, and then you'll rate each sentence.</p><p>When you're ready to begin, click Begin Study below.</p><button id="stage-continue">Begin Study</button>`,'simple-page');
     if(screen.stage==='demographics') return demographics();
     return page('<h1>Feedback</h1><form id="feedback-form"><div class="field"><label for="feedback">Do you have any feedback about any part of this study? <span class="optional">(optional)</span></label><textarea id="feedback" name="feedback" rows="5"></textarea></div><button type="submit">Finish</button></form>','simple-page');
   }
@@ -163,6 +163,7 @@
       let saved=null;
       try{saved=JSON.parse(sessionStorage.getItem(storageKey+'-review'));}catch{}
       selected=core.validateAssignment(saved || core.assignment('thick'));
+      sessionStorage.setItem(storageKey+'-review',JSON.stringify(selected));
       state={id:'review',consented:false,records:[],next:0,complete:false};
     } else {
       try {state=JSON.parse(localStorage.getItem(storageKey));}catch{}
