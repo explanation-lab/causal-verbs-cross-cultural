@@ -25,22 +25,7 @@ The review package does not submit responses or contain participant data.
 
 We are trying alternative thin verbs and story contexts to select the final
 materials. Please flag awkward wording, unclear outcomes, and alternatives
-that seem to work better. EMAIL_NOTE.txt contains a short overview.
-'''
-EMAIL = '''Subject: English causal-verb pilots for review
-
-Hi all,
-
-I've attached the three English pilots for review. Unzip the folder and double-click index.html. You can switch pilots from the links at the top and jump straight to any case or question.
-
-- Absences: omissions versus direct causes. Alternatives include change/dry out, weaken/degrade, and increase water level/dampen.
-- Factivity: fact-denoting subjects versus direct causes. We're trying different phone and scooter versions, including die/kill versus turn off, and stop, power down, or disconnect.
-- Chains: earlier versus later causes. Alternatives include deform/loosen, detach/separate, activate/disconnect, and empty/decrease.
-
-Each participant will see one version per story. We'll balance the alternatives across participants to see which materials work best. Please flag awkward wording, unclear outcomes, or versions you think work better.
-
-Best wishes,
-David
+that seem to work better.
 '''
 
 class References(HTMLParser):
@@ -67,7 +52,6 @@ def collect():
         relative = f'Pilots/Absences/vendor/{name}'
         files[relative] = (ROOT / relative).read_bytes()
     files['READ_ME_FIRST.txt'] = README.encode()
-    files['EMAIL_NOTE.txt'] = EMAIL.encode()
     return files
 
 def validate(files):
