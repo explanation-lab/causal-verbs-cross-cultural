@@ -53,7 +53,7 @@
     const item=core.material(materials,selected,screen.case);
     let content=storyHTML(item,screen);
     if (screen.stage==='story') return page(content+'<div class="story-action"><button id="stage-continue">Continue</button></div>');
-    content+='<p class="sentence-instruction"><strong>Please carefully read all of the following sentences before rating them.</strong></p>';
+    if(screen.stage==='preview') content+='<p class="sentence-instruction"><strong>Please carefully read all of the following sentences before rating them.</strong></p>';
     content+='<ol class="sentence-list">'+item.sentences.map((sentence,index)=> {
       const active=screen.stage==='rating' && index+1===screen.sentence_position;
       const masked=screen.stage==='rating' && !active;

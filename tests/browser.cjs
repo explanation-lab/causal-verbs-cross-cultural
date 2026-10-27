@@ -72,11 +72,13 @@ let browser,phase='starting',lastPage;
   await page.screenshot({path:path.join(results,'review-sentences.png'),fullPage:true});
   await page.click('#stage-continue');
   const topPositions=[];
+  let ratingOffset;
   for(let i=0;i<4;i++) {
     await page.waitForSelector(`.sentence-slot.active[data-position="${i+1}"]`);
     const top=await page.locator('.active .sentence-text').evaluate(n=>n.getBoundingClientRect().top+scrollY);
     topPositions.push(top);
-    assert(Math.abs(top-previewSentenceTops[i])<2,'Each active sentence keeps its original vertical position.');
+    if(i===0) ratingOffset=top-previewSentenceTops[i];
+    assert(Math.abs(top-previewSentenceTops[i]-ratingOffset)<2,'Sentence positions stay fixed after the preview-only instruction is removed.');
     if(i===0||i===3)await page.screenshot({path:path.join(results,`review-rating-${i+1}.png`),fullPage:true});
     await page.locator('input[name=naturalness][value="5"]').check();await page.click('#rating-continue');
   }
