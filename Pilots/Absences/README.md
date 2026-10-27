@@ -29,7 +29,7 @@ Every target uses the assigned condition's predicate. The prompt is “How natur
 1. Adult participation consent, then instructions.
 2. A bold reading instruction above the centered story and its single outcome; Continue.
 3. The same story plus the instruction to read all four sentences. All four appear in the participant's fixed order; Continue to ratings.
-4. Four rating screens. One sentence at a time appears in bold in a stationary question card directly beneath the story, with the same width as the story card. A blue outline, stronger shadow, and sentence counter distinguish the question card. Its scale and Continue button remain centered. The preview reading instruction is removed. A response is required before continuing.
+4. Four rating screens. One sentence at a time appears in bold in a stationary question card directly beneath the story, with the same width as the story card. A blue outline and stronger shadow distinguish the question card. Its scale and Continue button remain centered. The preview reading instruction is removed. Story and sentence counters are not displayed. A response is required before continuing.
 5. Repeat for all four stories, then optional demographics/language background and feedback.
 6. Save completion, with retry and JSON/CSV download options.
 
