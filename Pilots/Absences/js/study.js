@@ -47,7 +47,7 @@
     return `<div class="story-block"><strong class="read-instruction">Please read the following very carefully before answering any questions.</strong><div class="story"><p>${escape(item.setup)}</p><p>${escape(item.ending)}</p></div></div>`;
   }
   function scale() {
-    return `<div class="rating-panel"><p class="rating-question" id="naturalness-question">How natural is this sentence as a description of this situation?</p><fieldset class="scale" aria-describedby="naturalness-question"><legend>Naturalness rating</legend><div class="scale-options">${Array.from({length:7},(_,i)=>`<label><input type="radio" name="naturalness" value="${i+1}" aria-label="${i+1}${i===0?' — Very unnatural':i===6?' — Very natural':''}"><span>${i+1}</span></label>`).join('')}</div><div class="scale-anchors"><span>Very unnatural</span><span>Very natural</span></div></fieldset><div class="rating-action"><button id="rating-continue" disabled>Continue</button></div></div>`;
+    return `<div class="rating-panel"><fieldset class="scale" aria-describedby="naturalness-question"><legend>Naturalness rating</legend><div class="scale-options">${Array.from({length:7},(_,i)=>`<label><input type="radio" name="naturalness" value="${i+1}" aria-label="${i+1}${i===0?' — Very unnatural':i===6?' — Very natural':''}"><span>${i+1}</span></label>`).join('')}</div><div class="scale-anchors"><span>Very unnatural</span><span>Very natural</span></div></fieldset><div class="rating-action"><button id="rating-continue" disabled>Continue</button></div></div>`;
   }
   function caseHTML(screen) {
     const item=core.material(materials,selected,screen.case);
@@ -60,7 +60,7 @@
       ).join('')+'</ol><div class="preview-action"><button id="stage-continue">Continue to ratings</button></div>';
     } else {
       const sentence=item.sentences[screen.sentence_position-1];
-      content+=`<section class="question-card sentence-slot active" data-position="${screen.sentence_position}" aria-label="Sentence rating"><span class="sentence-text">${escape(sentence.text)}</span>${scale()}</section>`;
+      content+=`<section class="question-card sentence-slot active" data-position="${screen.sentence_position}" aria-label="Sentence rating"><p class="rating-question" id="naturalness-question">How natural is this sentence as a description of the situation?</p><span class="sentence-text">${escape(sentence.text)}</span>${scale()}</section>`;
     }
     return page(content);
   }
