@@ -59,6 +59,21 @@ gaps <- contrast_rows(paired, v, B = 200)
 stopifnot(gaps$gap_difference[gaps$construction == 'lexical'] == -3,
           gaps$gap_difference[gaps$construction == 'cause'] == 0)
 stopifnot(nrow(contrast_rows(filter(paired, verb_condition == 'thick'), v, B = 200)) == 0)
+boost <- construction_advantage(paired, v, B = 200)
+stopifnot(nrow(boost$boosts) == 4, nrow(boost$contrasts) == 2,
+          boost$contrasts$thick_minus_thin_boost[boost$contrasts$candidate == 'absence'] == 2,
+          boost$contrasts$thick_minus_thin_boost[boost$contrasts$candidate == 'direct'] == -1,
+          all(boost$boosts$n == 2),
+          all(boost$boosts$low == boost$boosts$high))
+# Perfectly covarying lexical/cause responses have zero uncertainty in their
+# within-person difference even though the component ratings vary across people.
+paired_varying <- paired %>% mutate(rating = rating + if_else(grepl('1$', participant), -1, 0))
+boost_varying <- construction_advantage(paired_varying, v, B = 200)
+stopifnot(all(boost_varying$boosts$low == boost_varying$boosts$high),
+          identical(boost_varying$boosts$mean, boost$boosts$mean))
+mock_boost <- construction_advantage(mock, catalog$versions, B = 200)
+stopifnot(nrow(mock_boost$boosts) == 96, nrow(mock_boost$contrasts) == 48,
+          all(filter(mock_boost$boosts, study == 'Absences', case == 'beach', verb_condition == 'thick')$n == 36))
 
 # Optional integration check against previously generated, explicitly supplied QA bundles.
 args <- commandArgs(trailingOnly = TRUE)

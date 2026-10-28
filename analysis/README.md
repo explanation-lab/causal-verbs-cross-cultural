@@ -8,17 +8,20 @@ Generate mock figures from the repository root:
 Rscript analysis/render_figures.R mock
 ```
 
-This creates PNG and vector PDF files in ignored `analysis/output/mock/`: two display styles for all 24 material versions, thick-only and thin-only overviews for each study, and two beach examples comparing the styles. Every mock figure is labeled **MOCK DATA**. The simulated patterns are arbitrary layout examples, not predictions.
+This creates PNG and vector PDF files in ignored `analysis/output/mock/`: profile, construction-advantage, and difference plots for all 24 material versions; thick-only and thin-only overviews for each study; and selected examples. Every mock figure is labeled **MOCK DATA**. Arbitrary simulated values illustrate the researcher's proposed hypothesis; they are not pilot estimates or evidence for that hypothesis.
 
 The R packages are `ggplot2`, `dplyr` (1.1 or newer), `tidyr`, `readr`, `jsonlite`, and `knitr`. Install any missing packages with `install.packages()`. Tested with R 4.5.2, ggplot2 4.0.2, dplyr 1.2.0, tidyr 1.3.2, readr 2.1.6, jsonlite 2.0.0, and knitr 1.51. Pandoc is not needed for this figure-only workflow.
 
 ## Display choices
 
-- **Profile:** naturalness from 1 to 7, with direct/event/later versus omission/fact/earlier on the horizontal axis. Thick and thin have distinct colors and shapes; lexical and cause + verb forms have separate panels. Points show means, whiskers show pointwise 95% bootstrap intervals, and n shows participants per cell.
+- **Profile (revised grouping):** naturalness from 1 to 7, with lexical verb versus cause + verb on the horizontal axis. Thick and thin have distinct colors and shapes. Direct/event/proximal and omission/fact/distal have separate columns; material versions have separate rows. A steeper line shows a larger construction advantage. Points show means, whiskers show pointwise 95% bootstrap intervals, and n shows participants per cell.
+- **Construction advantage:** cause + verb minus lexical verb, calculated within each participant. Thick and thin appear side by side in separate causal-subject panels. The predicted interaction is a larger thick advantage for omission/fact/distal subjects, with similarly small advantages for direct subjects. The common vertical scale spans at least -1 to 4 and expands to contain all observed intervals across versions.
 - **Difference:** thin minus thick for each causal subject and sentence form. Zero means equal group means; positive means thin was rated higher. The horizontal range adapts to include all displayed intervals, with a minimum range of -2 to 2.
 - **Overviews:** separate thick-only and thin-only matrices show all four means and participant counts for each material version. These compact figures help compare alternatives; the profile figures show uncertainty.
 
 The code also calculates within-person direct-versus-other gaps and the thin-minus-thick difference in those gaps, separately for each sentence form. These summaries are available in `cause-gap-summary.csv`; no candidates are automatically ranked or selected.
+
+`construction-advantage.csv` contains the paired cause + verb minus lexical estimates. `construction-interaction.csv` compares those increases: `(cause-thick - lexical-thick) - (cause-thin - lexical-thin)`, separately for each causal subject. Positive values indicate a larger thick increase. Within-person pairing is retained before independently resampling the thick and thin groups. Neither a nonsignificant contrast nor visually similar points establishes equivalence for direct subjects.
 
 ## Use real exports after choosing the figures
 

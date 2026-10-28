@@ -123,7 +123,8 @@ load_ratings <- function(paths, catalog, expected_mode = 'production', exclusion
 }
 
 simulate_ratings <- function(catalog, seed = 20261028) {
-  # Arbitrary display examples, not estimated effects or predictions.
+  # Illustrates the researcher's stated hypothesis with arbitrary simulated values.
+  # These values are not estimates, evidence, or fitted predictions.
   set.seed(seed)
   rows <- list(); ix <- 0L
   for (study in catalog$studies$study) {
@@ -140,10 +141,11 @@ simulate_ratings <- function(catalog, seed = 20261028) {
         for (k in seq_len(nrow(targets))) {
           t <- targets[k, ]
           focal <- t$candidate %in% c('direct', 'proximal')
-          mean <- if (focal) 5.9 else if (t$construction == 'cause') 4.9 else 3.0
+          mean <- if (focal) 5.9 else if (t$construction == 'cause') 5.8 else 3.0
           if (cell$verb_condition == 'thin') {
             v <- match(t$variant, unique(catalog$versions$variant))
-            mean <- mean + if (focal) -.15 else c(.1, .9, -.4, .5)[(v - 1) %% 4 + 1]
+            mean <- if (focal) 5.8 else if (t$construction == 'cause') 5.8 else
+              5.0 + c(-.2, .4, -.5, .1)[(v - 1) %% 4 + 1]
           }
           ix <- ix + 1L
           rows[[ix]] <- t %>% mutate(submission_id = pid, participant = paste(study, pid, sep = '::'),
@@ -204,4 +206,44 @@ contrast_rows <- function(data, versions, B = 2000, seed = 928) {
                                   gap_difference = double(), low = double(), high = double(),
                                   n_thick = integer(), n_thin = integer()))
   result
+}
+
+construction_advantage <- function(data, versions, B = 2000, seed = 615) {
+  # For each participant and causal subject, subtract lexical from cause + verb.
+  # Thick/thin comparisons then resample these paired differences independently.
+  set.seed(seed)
+  boosts <- contrasts <- list()
+  for (i in seq_len(nrow(versions))) {
+    v <- versions[i, ]
+    d <- comparison_rows(data, v) %>%
+      select(participant, verb_condition, candidate, construction, rating) %>%
+      pivot_wider(names_from = construction, values_from = rating)
+    if (!all(c('cause', 'lexical') %in% names(d))) next
+    d <- mutate(d, boost = cause - lexical)
+    boosts[[i]] <- d %>% group_by(verb_condition, candidate) %>%
+      group_modify(~bootstrap_mean(.x$boost, B)) %>% ungroup() %>%
+      mutate(study = v$study, case = v$case, variant = v$variant)
+    contrasts[[i]] <- bind_rows(lapply(unique(d$candidate), function(cand) {
+      thick <- d$boost[d$candidate == cand & d$verb_condition == 'thick']
+      thin <- d$boost[d$candidate == cand & d$verb_condition == 'thin']
+      if (!length(thick) || !length(thin)) return(tibble())
+      ci <- c(NA_real_, NA_real_)
+      if (min(length(thick), length(thin)) >= 2) ci <- quantile(replicate(B,
+        mean(sample(thick, length(thick), TRUE)) - mean(sample(thin, length(thin), TRUE))),
+        c(.025, .975), names = FALSE)
+      tibble(study = v$study, case = v$case, variant = v$variant, candidate = cand,
+             thick_boost = mean(thick), thin_boost = mean(thin),
+             thick_minus_thin_boost = mean(thick) - mean(thin), low = ci[1], high = ci[2],
+             n_thick = length(thick), n_thin = length(thin))
+    }))
+  }
+  empty_boosts <- tibble(verb_condition = character(), candidate = character(), n = integer(),
+                         mean = double(), low = double(), high = double(),
+                         study = character(), case = character(), variant = character())
+  empty_contrasts <- tibble(study = character(), case = character(), variant = character(),
+                            candidate = character(), thick_boost = double(), thin_boost = double(),
+                            thick_minus_thin_boost = double(), low = double(), high = double(),
+                            n_thick = integer(), n_thin = integer())
+  list(boosts = bind_rows(empty_boosts, bind_rows(boosts)),
+       contrasts = bind_rows(empty_contrasts, bind_rows(contrasts)))
 }

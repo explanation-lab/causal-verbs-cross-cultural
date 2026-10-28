@@ -36,13 +36,16 @@ if (params$mode == 'mock') {
 }
 mock <- params$mode == 'mock'
 prefix <- if (mock) 'MOCK DATA | ' else ''
-label <- if (mock) 'Simulated ratings for layout review only. Not pilot results.' else
+label <- if (mock) 'Simulated illustration of the proposed hypothesis. Not pilot results.' else
   'Production pilot ratings. Descriptive, exploratory comparisons.'
 B <- params$bootstrap_draws
 cells <- summarise_ratings(ratings, B)
 gaps <- contrast_rows(ratings, catalog$versions, B)
+advantages <- construction_advantage(ratings, catalog$versions, B)
 write_csv(mutate(cells, data_kind = params$mode), file.path(output, 'cell-summary.csv'))
 write_csv(mutate(gaps, data_kind = params$mode), file.path(output, 'cause-gap-summary.csv'))
+write_csv(mutate(advantages$boosts, data_kind = params$mode), file.path(output, 'construction-advantage.csv'))
+write_csv(mutate(advantages$contrasts, data_kind = params$mode), file.path(output, 'construction-interaction.csv'))
 # No automatic language/speed exclusions, significance tests, or candidate ranking.
 # Means are descriptive summaries of the 1-7 ordinal responses.
 # Each cell has one rating per participant. Percentile bootstrap CIs resample people
@@ -68,8 +71,8 @@ theme_pilot <- function() {
 }
 candidate_labels <- function(study) {
   switch(study, Absences = c(direct = 'Direct cause', absence = 'Omission'),
-         Factivity = c(direct = 'Event', fact = 'Fact'),
-         Chains = c(proximal = 'Later cause', distal = 'Earlier cause'))
+         Factivity = c(direct = 'Event (direct)', fact = 'Fact-denoting'),
+         Chains = c(proximal = 'Direct (proximal)', distal = 'Distal cause'))
 }
 format_data <- function(d, study) {
   labs <- candidate_labels(study)
@@ -97,21 +100,49 @@ comparison_caption <- function(versions) {
 }
 profile_plot <- function(versions) {
   d <- format_data(comparison_summary(versions), versions$study[1])
-  ggplot(d, aes(candidate_label, mean, color = verb_group, shape = verb_group, group = verb_group)) +
-    geom_line(linewidth = .7, alpha = .6, na.rm = TRUE) +
+  ggplot(d, aes(construction_label, mean, color = verb_group, shape = verb_group, group = verb_group)) +
+    geom_line(linewidth = .9, alpha = .8, position = position_dodge(width = .12), na.rm = TRUE) +
     geom_errorbar(aes(ymin = low, ymax = high), width = .065, linewidth = .65,
-                  position = position_dodge(width = .13), na.rm = TRUE) +
-    geom_point(size = 3.1, position = position_dodge(width = .13), na.rm = TRUE) +
+                  position = position_dodge(width = .12), na.rm = TRUE) +
+    geom_point(size = 3.1, position = position_dodge(width = .12), na.rm = TRUE) +
     geom_text(aes(y = .68, label = paste0('n=', n)), size = 3.1,
               position = position_dodge(width = .5), show.legend = FALSE) +
-    facet_grid(construction_label ~ version_label) +
+    facet_grid(version_label ~ candidate_label, switch = 'y') +
     scale_color_manual(values = colors, drop = FALSE) +
     scale_shape_manual(values = c(Thick = 16, Thin = 17), drop = FALSE) +
     scale_y_continuous(breaks = 1:7, limits = c(.5, 7.4)) +
     scale_x_discrete(expand = expansion(add = .45)) +
-    labs(title = paste0(prefix, versions$study[1], ': thick and thin profiles'),
-         subtitle = 'Compare the two verbs within each sentence form and causal subject.',
-         x = NULL, y = 'Mean naturalness (1-7)', caption = comparison_caption(versions)) + theme_pilot()
+    labs(title = paste0(prefix, versions$study[1], ': effect of adding "cause"'),
+         subtitle = 'A steeper upward line means a larger increase from lexical verb to cause + verb.',
+         x = NULL, y = 'Mean naturalness (1-7)', caption = comparison_caption(versions)) + theme_pilot() +
+    theme(strip.text.y.left = element_text(angle = 0), strip.placement = 'outside')
+}
+advantage_plot <- function(versions) {
+  scaffold <- crossing(versions %>% select(study, case, variant, doc_heading),
+                        candidate = names(candidate_labels(versions$study[1])),
+                        verb_condition = c('thick', 'thin'))
+  d <- scaffold %>% left_join(advantages$boosts,
+    by = c('study', 'case', 'variant', 'candidate', 'verb_condition')) %>%
+    mutate(n = replace_na(n, 0L), construction = 'cause', version_label = doc_heading) %>%
+    format_data(versions$study[1])
+  all_values <- c(advantages$boosts$mean, advantages$boosts$low, advantages$boosts$high)
+  all_values <- all_values[is.finite(all_values)]
+  bounds <- c(min(-1, floor(min(c(0, all_values)))), max(4, ceiling(max(c(0, all_values)))))
+  ggplot(d, aes(verb_group, mean, color = verb_group, shape = verb_group)) +
+    geom_hline(yintercept = 0, linetype = 'dashed', color = '#7C8B96', linewidth = .5) +
+    geom_errorbar(aes(ymin = low, ymax = high), width = .09, linewidth = .75, na.rm = TRUE) +
+    geom_point(size = 3.3, na.rm = TRUE) +
+    facet_grid(version_label ~ candidate_label, switch = 'y') +
+    scale_color_manual(values = colors, drop = FALSE) +
+    scale_shape_manual(values = c(Thick = 16, Thin = 17), drop = FALSE) +
+    scale_y_continuous(limits = bounds, breaks = seq(bounds[1], bounds[2], 1)) +
+    labs(title = paste0(prefix, versions$study[1], ': advantage of "cause + verb"'),
+         subtitle = 'Compare the thick and thin increases within each causal subject.',
+         x = NULL, y = 'Mean increase (cause + verb minus lexical verb)',
+         caption = paste(label, 'Points: mean within-person differences; whiskers: pointwise 95% bootstrap CIs.',
+                         paste(unique(versions$comparison_note[nzchar(versions$comparison_note)]), collapse = '\n'), sep = '\n')) +
+    theme_pilot() + theme(strip.text.y.left = element_text(angle = 0), strip.placement = 'outside',
+                          legend.position = 'none')
 }
 difference_plot <- function(versions) {
   d <- comparison_summary(versions)
@@ -194,11 +225,13 @@ placement <- list()
 for (i in seq_len(nrow(catalog$versions))) {
   v <- catalog$versions[i, ]
   stem <- paste(tolower(v$study), v$case, v$variant, sep = '-')
-  save_plot(profile_plot(v), paste0(stem, '-profile'), 8, 7.3)
+  save_plot(profile_plot(v), paste0(stem, '-profile'), 10, 5.2)
+  save_plot(advantage_plot(v), paste0(stem, '-construction-advantage'), 10, 5.2)
   save_plot(difference_plot(v), paste0(stem, '-difference'), 10, 4.6)
   placement[[i]] <- v %>% select(study, case, variant, doc_heading, thick_variant, context_match, comparison_note) %>%
     left_join(catalog$studies %>% select(study, document_id), by = 'study') %>%
     mutate(profile_file = paste0(stem, '-profile.png'), difference_file = paste0(stem, '-difference.png'),
+           construction_advantage_file = paste0(stem, '-construction-advantage.png'),
            data_kind = params$mode, placement = 'Immediately after this section\'s materials table')
 }
 for (study in catalog$studies$study) {
@@ -212,7 +245,12 @@ for (study in catalog$studies$study) {
 }
 # These are the two alternative displays to compare using the same beach data.
 beach <- catalog$versions %>% filter(study == 'Absences', case == 'beach')
-save_plot(profile_plot(beach), 'example-1-profile', 10, 7.3)
+save_plot(profile_plot(beach), 'example-1-profile', 11, 7.4)
+save_plot(advantage_plot(beach), 'example-3-construction-advantage', 11, 7.4)
+save_plot(profile_plot(catalog$versions %>% filter(study == 'Factivity', variant == 'stop_working')),
+          'example-factivity-construction', 10, 5.2)
+save_plot(profile_plot(catalog$versions %>% filter(study == 'Chains', case == 'frame', variant == 'deform')),
+          'example-chains-construction', 10, 5.2)
 save_plot(difference_plot(beach), 'example-2-difference', 11, 4.9)
 write_csv(bind_rows(placement), file.path(output, 'google-doc-figure-placement.csv'))
 # Deliberately no Google Docs writes until the figure style has been chosen.
