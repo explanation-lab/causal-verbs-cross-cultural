@@ -35,9 +35,6 @@ if (params$mode == 'mock') {
   write_csv(imported$import_audit, file.path(output, 'import-audit.csv'))
 }
 mock <- params$mode == 'mock'
-prefix <- if (mock) 'MOCK DATA | ' else ''
-label <- if (mock) 'Simulated illustration of the proposed hypothesis. Not pilot results.' else
-  'Production pilot ratings. Descriptive, exploratory comparisons.'
 B <- params$bootstrap_draws
 cells <- summarise_ratings(ratings, B)
 gaps <- contrast_rows(ratings, catalog$versions, B)
@@ -55,7 +52,7 @@ write_csv(mutate(advantages$contrasts, data_kind = params$mode), file.path(outpu
 ```
 
 ```{r figure-functions, include=FALSE}
-colors <- c(Thick = '#006B8F', Thin = '#BA4B21')
+colors <- c(Thick = '#006B8F', Thin = '#C13B32')
 theme_pilot <- function() {
   theme_minimal(base_size = 12, base_family = 'sans') +
     theme(plot.title = element_text(face = 'bold', size = 17, color = '#172B3A'),
@@ -93,14 +90,47 @@ comparison_summary <- function(versions) {
       mutate(n = replace_na(n, 0L), version_label = paste0(v$doc_heading, '\n', v$thin_label, ' vs ', v$thick_label))
   }))
 }
-comparison_caption <- function(versions) {
-  note <- unique(versions$comparison_note[nzchar(versions$comparison_note)])
-  paste(c(label, 'Points: means; whiskers: pointwise 95% bootstrap CIs. n = participants per cell.',
-          'Thick reference data may appear in multiple panels; they are counted once in overviews.', note), collapse = '\n')
+color_version_strips <- function(plot, versions, condition = NULL) {
+  # Native grid text keeps the colored words editable in the vector PDF and
+  # avoids requiring an HTML/Markdown text-rendering package.
+  grob <- ggplotGrob(plot)
+  strips <- which(grepl('^strip-l-', grob$layout$name))
+  strips <- strips[order(grob$layout$t[strips])]
+  stopifnot(length(strips) == nrow(versions))
+  strip_widths <- list()
+  for (j in seq_along(strips)) {
+    v <- versions[j, ]
+    heading <- grid::textGrob(paste(strwrap(v$doc_heading, width = 26), collapse = '\n'), x = .5,
+      gp = grid::gpar(fontsize = 11, fontface = 'bold', col = 'black', lineheight = 1.05))
+    words <- if (is.null(condition)) c(v$thin_label, ' vs ', v$thick_label) else
+      if (condition == 'thick') v$thick_label else v$thin_label
+    word_colors <- if (is.null(condition)) c(colors['Thin'], 'black', colors['Thick']) else colors[tools::toTitleCase(condition)]
+    text <- lapply(seq_along(words), function(k) grid::textGrob(words[k],
+      gp = grid::gpar(fontsize = 11, fontface = 'bold', col = word_colors[k])))
+    widths <- lapply(text, grid::grobWidth)
+    total <- Reduce(`+`, widths)
+    text_height <- grid::grobHeight(text[[1]])
+    gap <- grid::unit(.45, 'lines')
+    heading$y <- grid::unit(.5, 'npc') + (text_height + gap) / 2
+    strip_widths[[j]] <- grid::unit.pmax(grid::grobWidth(heading), total) + grid::unit(.18, 'inches')
+    left <- grid::unit(.5, 'npc') - total / 2
+    for (k in seq_along(text)) {
+      text[[k]]$x <- left + widths[[k]] / 2
+      text[[k]]$y <- grid::unit(.5, 'npc') - (grid::grobHeight(heading) + gap) / 2
+      left <- left + widths[[k]]
+    }
+    grob$grobs[[strips[j]]] <- grid::grobTree(
+      grid::rectGrob(gp = grid::gpar(fill = '#EDF2F5', col = NA)), heading,
+      do.call(grid::grobTree, text))
+  }
+  grob$widths[unique(grob$layout$l[strips])] <- Reduce(grid::unit.pmax, strip_widths)
+  grob
 }
-profile_plot <- function(versions) {
+profile_plot <- function(versions, condition = NULL) {
   d <- format_data(comparison_summary(versions), versions$study[1])
-  ggplot(d, aes(construction_label, mean, color = verb_group, shape = verb_group, group = verb_group)) +
+  d$version_label <- factor(d$version_label, levels = unique(d$version_label))
+  if (!is.null(condition)) d <- filter(d, verb_condition == condition)
+  plot <- ggplot(d, aes(construction_label, mean, color = verb_group, shape = verb_group, group = verb_group)) +
     geom_line(linewidth = .9, alpha = .8, position = position_dodge(width = .12), na.rm = TRUE) +
     geom_errorbar(aes(ymin = low, ymax = high), width = .065, linewidth = .65,
                   position = position_dodge(width = .12), na.rm = TRUE) +
@@ -108,109 +138,14 @@ profile_plot <- function(versions) {
     geom_text(aes(y = .68, label = paste0('n=', n)), size = 3.1,
               position = position_dodge(width = .5), show.legend = FALSE) +
     facet_grid(version_label ~ candidate_label, switch = 'y') +
-    scale_color_manual(values = colors, drop = FALSE) +
-    scale_shape_manual(values = c(Thick = 16, Thin = 17), drop = FALSE) +
+    scale_color_manual(values = colors, drop = !is.null(condition)) +
+    scale_shape_manual(values = c(Thick = 16, Thin = 17), drop = !is.null(condition)) +
     scale_y_continuous(breaks = 1:7, limits = c(.5, 7.4)) +
     scale_x_discrete(expand = expansion(add = .45)) +
-    labs(title = paste0(prefix, versions$study[1], ': effect of adding "cause"'),
-         subtitle = 'A steeper upward line means a larger increase from lexical verb to cause + verb.',
-         x = NULL, y = 'Mean naturalness (1-7)', caption = comparison_caption(versions)) + theme_pilot() +
+    labs(title = NULL, subtitle = NULL, caption = NULL,
+         x = NULL, y = 'Mean naturalness (1-7)') + theme_pilot() +
     theme(strip.text.y.left = element_text(angle = 0), strip.placement = 'outside')
-}
-advantage_plot <- function(versions) {
-  scaffold <- crossing(versions %>% select(study, case, variant, doc_heading),
-                        candidate = names(candidate_labels(versions$study[1])),
-                        verb_condition = c('thick', 'thin'))
-  d <- scaffold %>% left_join(advantages$boosts,
-    by = c('study', 'case', 'variant', 'candidate', 'verb_condition')) %>%
-    mutate(n = replace_na(n, 0L), construction = 'cause', version_label = doc_heading) %>%
-    format_data(versions$study[1])
-  all_values <- c(advantages$boosts$mean, advantages$boosts$low, advantages$boosts$high)
-  all_values <- all_values[is.finite(all_values)]
-  bounds <- c(min(-1, floor(min(c(0, all_values)))), max(4, ceiling(max(c(0, all_values)))))
-  ggplot(d, aes(verb_group, mean, color = verb_group, shape = verb_group)) +
-    geom_hline(yintercept = 0, linetype = 'dashed', color = '#7C8B96', linewidth = .5) +
-    geom_errorbar(aes(ymin = low, ymax = high), width = .09, linewidth = .75, na.rm = TRUE) +
-    geom_point(size = 3.3, na.rm = TRUE) +
-    facet_grid(version_label ~ candidate_label, switch = 'y') +
-    scale_color_manual(values = colors, drop = FALSE) +
-    scale_shape_manual(values = c(Thick = 16, Thin = 17), drop = FALSE) +
-    scale_y_continuous(limits = bounds, breaks = seq(bounds[1], bounds[2], 1)) +
-    labs(title = paste0(prefix, versions$study[1], ': advantage of "cause + verb"'),
-         subtitle = 'Compare the thick and thin increases within each causal subject.',
-         x = NULL, y = 'Mean increase (cause + verb minus lexical verb)',
-         caption = paste(label, 'Points: mean within-person differences; whiskers: pointwise 95% bootstrap CIs.',
-                         paste(unique(versions$comparison_note[nzchar(versions$comparison_note)]), collapse = '\n'), sep = '\n')) +
-    theme_pilot() + theme(strip.text.y.left = element_text(angle = 0), strip.placement = 'outside',
-                          legend.position = 'none')
-}
-difference_plot <- function(versions) {
-  d <- comparison_summary(versions)
-  set.seed(642)
-  diff <- bind_rows(lapply(seq_len(nrow(versions)), function(i) {
-    v <- versions[i, ]; raw <- comparison_rows(ratings, v)
-    bind_rows(lapply(names(candidate_labels(v$study)), function(cand) {
-      bind_rows(lapply(c('lexical', 'cause'), function(form) {
-        a <- raw$rating[raw$candidate == cand & raw$construction == form & raw$verb_condition == 'thick']
-        b <- raw$rating[raw$candidate == cand & raw$construction == form & raw$verb_condition == 'thin']
-        ci <- c(NA_real_, NA_real_)
-        if (min(length(a), length(b)) >= 2) ci <- quantile(replicate(B,
-          mean(sample(b, length(b), TRUE)) - mean(sample(a, length(a), TRUE))), c(.025, .975), names = FALSE)
-        tibble(candidate = cand, construction = form, version_label = v$doc_heading,
-               difference = if (length(a) && length(b)) mean(b) - mean(a) else NA_real_,
-               low = ci[1], high = ci[2], n_thick = length(a), n_thin = length(b))
-      }))
-    }))
-  }))
-  if (!nrow(diff)) return(ggplot() + labs(title = paste0(prefix, 'No observations for this comparison')) + theme_void())
-  d <- format_data(diff, versions$study[1]) %>%
-    mutate(row_label = paste(version_label, candidate_label, sep = ' | '),
-           row_label = factor(row_label, levels = rev(unique(row_label))))
-  observed <- c(d$difference, d$low, d$high)
-  limit <- max(2, ceiling(max(c(0, abs(observed[is.finite(observed)])))))
-  ggplot(d, aes(difference, row_label)) +
-    geom_vline(xintercept = 0, color = '#65747E', linetype = 'dashed', linewidth = .55) +
-    geom_errorbar(aes(xmin = low, xmax = high), orientation = 'y', width = .12,
-                  color = '#243D50', linewidth = .8, na.rm = TRUE) +
-    geom_point(shape = 21, fill = '#BA4B21', color = 'white', stroke = .8, size = 3.8, na.rm = TRUE) +
-    facet_wrap(~construction_label, nrow = 1) +
-    scale_x_continuous(limits = c(-limit, limit), breaks = pretty(c(-limit, limit), n = 5)) +
-    labs(title = paste0(prefix, versions$study[1], ': thin minus thick'),
-         subtitle = 'Left of zero: thick rated higher. Right of zero: thin rated higher.',
-         x = 'Difference in mean naturalness (thin - thick)', y = NULL,
-         caption = paste(label, 'Dots: independent-group mean differences; whiskers: pointwise 95% bootstrap CIs.',
-                         paste(unique(versions$comparison_note[nzchar(versions$comparison_note)]), collapse = '\n'), sep = '\n')) +
-    theme_pilot() + theme(panel.grid.major.x = element_line(color = '#E5EBEF'), panel.grid.major.y = element_blank())
-}
-overview_plot <- function(study, condition) {
-  versions <- catalog$versions %>% filter(.data$study == .env$study)
-  if (condition == 'thick') {
-    # One row per collected thick material version, even if it is a reference for several thin alternatives.
-    versions <- versions %>% mutate(variant = thick_variant) %>% distinct(case, variant, .keep_all = TRUE)
-  }
-  labels <- if (condition == 'thin') versions$doc_heading else versions$thick_heading
-  versions$overview_label <- labels
-  candidate_order <- names(candidate_labels(study))
-  scaffold <- crossing(versions %>% select(study, case, variant, overview_label),
-                        candidate = candidate_order, construction = c('lexical', 'cause')) %>%
-    mutate(verb_condition = condition)
-  d <- scaffold %>% left_join(cells, by = c('study', 'case', 'variant', 'verb_condition', 'candidate', 'construction')) %>%
-    mutate(n = replace_na(n, 0L), overview_label = factor(overview_label, levels = rev(labels))) %>% format_data(study)
-  ggplot(d, aes(candidate_label, overview_label, fill = mean)) +
-    geom_tile(color = 'white', linewidth = 1.2) +
-    geom_text(aes(label = if_else(n > 0, sprintf('%.1f\nn=%d', mean, n), 'No data'),
-                  color = if_else(!is.na(mean) & mean >= 4.7, 'light', 'dark')), size = 3.3, lineheight = 1.05) +
-    scale_color_manual(values = c(light = 'white', dark = '#163248'), guide = 'none') +
-    scale_fill_gradientn(colors = c('#F4F6F8', '#C7E4E5', '#53A6AC', '#155E75'),
-                         limits = c(1, 7), breaks = c(1, 4, 7), na.value = '#F7F7F7', name = 'Mean\nnaturalness') +
-    facet_grid(. ~ construction_label) +
-    labs(title = paste0(prefix, study, ': ', condition, ' versions'),
-         subtitle = 'Read across a row to see each version\'s four ratings.',
-         x = NULL, y = NULL,
-         caption = paste(label, 'Cells: mean and participant n. Shared thick references appear once.',
-                         'Use the per-version profile plots for uncertainty intervals.', sep = '\n')) +
-    theme_pilot() + theme(panel.grid = element_blank(), legend.position = 'right',
-                           axis.text.y = element_text(size = 10))
+  color_version_strips(plot, versions, condition)
 }
 save_plot <- function(plot, stem, width, height) {
   ggsave(file.path(output, paste0(stem, '.png')), plot, width = width, height = height,
@@ -225,35 +160,34 @@ placement <- list()
 for (i in seq_len(nrow(catalog$versions))) {
   v <- catalog$versions[i, ]
   stem <- paste(tolower(v$study), v$case, v$variant, sep = '-')
-  save_plot(profile_plot(v), paste0(stem, '-profile'), 10, 5.2)
-  save_plot(advantage_plot(v), paste0(stem, '-construction-advantage'), 10, 5.2)
-  save_plot(difference_plot(v), paste0(stem, '-difference'), 10, 4.6)
+  save_plot(profile_plot(v), paste0(stem, '-profile'), 10, 4.1)
   placement[[i]] <- v %>% select(study, case, variant, doc_heading, thick_variant, context_match, comparison_note) %>%
     left_join(catalog$studies %>% select(study, document_id), by = 'study') %>%
-    mutate(profile_file = paste0(stem, '-profile.png'), difference_file = paste0(stem, '-difference.png'),
-           construction_advantage_file = paste0(stem, '-construction-advantage.png'),
-           data_kind = params$mode, placement = 'Immediately after this section\'s materials table')
+    mutate(profile_file = paste0(stem, '-profile.png'), data_kind = params$mode,
+           placement = 'Immediately after this section\'s materials table')
 }
+# The overviews use the same selected profile layout, with one verb group at a time.
 for (study in catalog$studies$study) {
   for (condition in c('thick', 'thin')) {
-    n_rows <- if (condition == 'thin') sum(catalog$versions$study == study) else
-      catalog$allocation %>% filter(.data$study == .env$study, verb_condition == 'thick') %>%
-      distinct(case, variant) %>% nrow()
-    save_plot(overview_plot(study, condition), paste(tolower(study), condition, 'overview', sep = '-'),
-              11, max(5, n_rows * .52 + 2.8))
+    versions <- catalog$versions %>% filter(.data$study == .env$study)
+    if (condition == 'thick') {
+      versions <- versions %>% mutate(variant = thick_variant) %>%
+        distinct(case, variant, .keep_all = TRUE) %>%
+        mutate(doc_heading = vapply(strsplit(thick_heading, ' | ', fixed = TRUE), `[`, character(1), 1L))
+    }
+    save_plot(profile_plot(versions, condition), paste(tolower(study), condition, 'overview', sep = '-'),
+              12, max(4.1, nrow(versions) * 2.2 + 1.3))
   }
 }
-# These are the two alternative displays to compare using the same beach data.
 beach <- catalog$versions %>% filter(study == 'Absences', case == 'beach')
-save_plot(profile_plot(beach), 'example-1-profile', 11, 7.4)
-save_plot(advantage_plot(beach), 'example-3-construction-advantage', 11, 7.4)
+example_suffix <- if (mock) '-mock' else ''
+save_plot(profile_plot(beach), paste0('selected-profile', example_suffix), 11, 6.4)
 save_plot(profile_plot(catalog$versions %>% filter(study == 'Factivity', variant == 'stop_working')),
-          'example-factivity-construction', 10, 5.2)
+          paste0('selected-factivity', example_suffix), 10, 4.1)
 save_plot(profile_plot(catalog$versions %>% filter(study == 'Chains', case == 'frame', variant == 'deform')),
-          'example-chains-construction', 10, 5.2)
-save_plot(difference_plot(beach), 'example-2-difference', 11, 4.9)
+          paste0('selected-chains', example_suffix), 10, 4.1)
 write_csv(bind_rows(placement), file.path(output, 'google-doc-figure-placement.csv'))
-# Deliberately no Google Docs writes until the figure style has been chosen.
+# Figure style is approved; production figures will be added to Docs after analysis.
 writeLines(capture.output(sessionInfo()), file.path(output, 'R-session-info.txt'))
 message('Figures saved to ', output, ' [', params$mode, ']. No report generated.')
 ```
