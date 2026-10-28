@@ -1,0 +1,163 @@
+{
+  "study": "Factivity",
+  "total": 100,
+  "conditions": {
+    "thick": 42,
+    "thin": 58
+  },
+  "distinct_versions": {
+    "thick": 5,
+    "thin": 7
+  },
+  "cells": {
+    "thick_000": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "stop"
+      },
+      "target": 10
+    },
+    "thick_001": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_network"
+      },
+      "target": 11
+    },
+    "thick_010": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "stop"
+      },
+      "target": 11
+    },
+    "thick_011": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_network"
+      },
+      "target": 10
+    },
+    "thin_000": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "stop"
+      },
+      "target": 7
+    },
+    "thin_001": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "power_down"
+      },
+      "target": 8
+    },
+    "thin_002": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_battery"
+      },
+      "target": 7
+    },
+    "thin_003": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_network"
+      },
+      "target": 7
+    },
+    "thin_010": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "stop"
+      },
+      "target": 7
+    },
+    "thin_011": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "power_down"
+      },
+      "target": 7
+    },
+    "thin_012": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_battery"
+      },
+      "target": 7
+    },
+    "thin_013": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_network"
+      },
+      "target": 8
+    }
+  },
+  "variant_targets": {
+    "thick": {
+      "sewer_system": {
+        "stop_working": 42
+      },
+      "phone": {
+        "die_kill": 21,
+        "turn_off": 21
+      },
+      "scooter": {
+        "stop": 21,
+        "disconnect_network": 21
+      }
+    },
+    "thin": {
+      "sewer_system": {
+        "stop_working": 58
+      },
+      "phone": {
+        "die_kill": 29,
+        "turn_off": 29
+      },
+      "scooter": {
+        "stop": 14,
+        "power_down": 15,
+        "disconnect_battery": 14,
+        "disconnect_network": 15
+      }
+    }
+  },
+  "demographic_fields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ]
+}

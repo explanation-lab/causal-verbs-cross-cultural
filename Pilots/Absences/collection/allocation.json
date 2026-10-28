@@ -1,0 +1,148 @@
+{
+  "study": "Absences",
+  "total": 100,
+  "conditions": {
+    "thick": 36,
+    "thin": 64
+  },
+  "distinct_versions": {
+    "thick": 4,
+    "thin": 7
+  },
+  "cells": {
+    "thick": {
+      "verb_condition": "thick",
+      "variants": {
+        "beach": "change",
+        "driveway": "weaken",
+        "rocket": "activate",
+        "cellar": "increase"
+      },
+      "target": 36
+    },
+    "thin_0000": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "change",
+        "driveway": "weaken",
+        "rocket": "activate",
+        "cellar": "increase"
+      },
+      "target": 8
+    },
+    "thin_0001": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "change",
+        "driveway": "weaken",
+        "rocket": "activate",
+        "cellar": "dampen"
+      },
+      "target": 8
+    },
+    "thin_0100": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "change",
+        "driveway": "degrade",
+        "rocket": "activate",
+        "cellar": "increase"
+      },
+      "target": 8
+    },
+    "thin_0101": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "change",
+        "driveway": "degrade",
+        "rocket": "activate",
+        "cellar": "dampen"
+      },
+      "target": 8
+    },
+    "thin_1000": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "dry_out",
+        "driveway": "weaken",
+        "rocket": "activate",
+        "cellar": "increase"
+      },
+      "target": 8
+    },
+    "thin_1001": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "dry_out",
+        "driveway": "weaken",
+        "rocket": "activate",
+        "cellar": "dampen"
+      },
+      "target": 8
+    },
+    "thin_1100": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "dry_out",
+        "driveway": "degrade",
+        "rocket": "activate",
+        "cellar": "increase"
+      },
+      "target": 8
+    },
+    "thin_1101": {
+      "verb_condition": "thin",
+      "variants": {
+        "beach": "dry_out",
+        "driveway": "degrade",
+        "rocket": "activate",
+        "cellar": "dampen"
+      },
+      "target": 8
+    }
+  },
+  "variant_targets": {
+    "thick": {
+      "beach": {
+        "change": 36
+      },
+      "driveway": {
+        "weaken": 36
+      },
+      "rocket": {
+        "activate": 36
+      },
+      "cellar": {
+        "increase": 36
+      }
+    },
+    "thin": {
+      "beach": {
+        "change": 32,
+        "dry_out": 32
+      },
+      "driveway": {
+        "weaken": 32,
+        "degrade": 32
+      },
+      "rocket": {
+        "activate": 64
+      },
+      "cellar": {
+        "increase": 32,
+        "dampen": 32
+      }
+    }
+  },
+  "demographic_fields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ]
+}

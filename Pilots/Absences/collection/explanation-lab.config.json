@@ -1,0 +1,57 @@
+{
+  "format": "explanation-lab-study-config",
+  "manifestVersion": "1.2.0",
+  "schemaVersion": "2.0.0",
+  "convertedAt": "2026-10-28T15:27:44.954Z",
+  "sourceZip": "Absences-console-source.zip",
+  "jsPsychVersion": "7.3.4",
+  "experimentVersion": "absences-english-console-2.0.0",
+  "clientVersion": "1.5.1",
+  "assignmentType": "between_participant",
+  "launchAssignmentParameter": "condition",
+  "launchConditions": [
+    "thick",
+    "thin_0000",
+    "thin_0001",
+    "thin_0100",
+    "thin_0101",
+    "thin_1000",
+    "thin_1001",
+    "thin_1100",
+    "thin_1101"
+  ],
+  "conditions": [
+    "thick",
+    "thin_0000",
+    "thin_0001",
+    "thin_0100",
+    "thin_0101",
+    "thin_1000",
+    "thin_1001",
+    "thin_1100",
+    "thin_1101"
+  ],
+  "internalFactors": [
+    "case",
+    "case_order",
+    "sentence_order",
+    "variant",
+    "verb_condition"
+  ],
+  "internalConditionCells": [],
+  "demographicsConfirmed": true,
+  "demographicFields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ],
+  "conversionOutcome": "ready",
+  "packageFingerprint": "bcbe76c640841bb6d2e3418ab4b3e81f8e36dbc964de5a1577d7b2ede939190e",
+  "originalBackupPaths": []
+}

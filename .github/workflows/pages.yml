@@ -1,0 +1,29 @@
+name: Publish pilot study pages
+on:
+  push:
+    branches: [codex/absences-pilot]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pilot-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Build static study assets
+        run: python3 tools/stage_pages.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pages
+      - name: Deploy study pages
+        id: deployment
+        uses: actions/deploy-pages@v4

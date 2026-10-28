@@ -1,0 +1,63 @@
+{
+  "format": "explanation-lab-study-config",
+  "manifestVersion": "1.2.0",
+  "schemaVersion": "2.0.0",
+  "convertedAt": "2026-10-28T15:27:45.197Z",
+  "sourceZip": "Factivity-console-source.zip",
+  "jsPsychVersion": "7.3.4",
+  "experimentVersion": "factivity-english-console-2.0.0",
+  "clientVersion": "1.5.1",
+  "assignmentType": "between_participant",
+  "launchAssignmentParameter": "condition",
+  "launchConditions": [
+    "thick_000",
+    "thick_001",
+    "thick_010",
+    "thick_011",
+    "thin_000",
+    "thin_001",
+    "thin_002",
+    "thin_003",
+    "thin_010",
+    "thin_011",
+    "thin_012",
+    "thin_013"
+  ],
+  "conditions": [
+    "thick_000",
+    "thick_001",
+    "thick_010",
+    "thick_011",
+    "thin_000",
+    "thin_001",
+    "thin_002",
+    "thin_003",
+    "thin_010",
+    "thin_011",
+    "thin_012",
+    "thin_013"
+  ],
+  "internalFactors": [
+    "case",
+    "case_order",
+    "sentence_order",
+    "variant",
+    "verb_condition"
+  ],
+  "internalConditionCells": [],
+  "demographicsConfirmed": true,
+  "demographicFields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ],
+  "conversionOutcome": "ready",
+  "packageFingerprint": "9319d02c42de23ee97397d55e24afc127ee4434bd30eb8e7d8124777b21fc8bf",
+  "originalBackupPaths": []
+}

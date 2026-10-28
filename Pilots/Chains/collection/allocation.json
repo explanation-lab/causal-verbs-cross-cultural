@@ -1,0 +1,484 @@
+{
+  "study": "Chains",
+  "total": 100,
+  "conditions": {
+    "thick": 41,
+    "thin": 59
+  },
+  "distinct_versions": {
+    "thick": 7,
+    "thin": 10
+  },
+  "cells": {
+    "thick_0000": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 7
+    },
+    "thick_0001": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 6
+    },
+    "thick_0002": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 7
+    },
+    "thick_0010": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "empty_glass"
+      },
+      "target": 7
+    },
+    "thick_0011": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 7
+    },
+    "thick_0012": {
+      "verb_condition": "thick",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_party_supply"
+      },
+      "target": 7
+    },
+    "thin_0000": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 1
+    },
+    "thin_0001": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 1
+    },
+    "thin_0002": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_0010": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_0011": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_0012": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_0020": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_0021": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 1
+    },
+    "thin_0022": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_0100": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 1
+    },
+    "thin_0101": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_0102": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_0110": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_0111": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 1
+    },
+    "thin_0112": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 1
+    },
+    "thin_0120": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_0121": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_0122": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "deform",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_party_supply"
+      },
+      "target": 1
+    },
+    "thin_1000": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_1001": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 1
+    },
+    "thin_1002": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_1010": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 1
+    },
+    "thin_1011": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_1012": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_1020": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_1021": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_1022": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "detach",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_party_supply"
+      },
+      "target": 1
+    },
+    "thin_1100": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_1101": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_1102": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "activate_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_1110": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "empty_glass"
+      },
+      "target": 1
+    },
+    "thin_1111": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 2
+    },
+    "thin_1112": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_beacon",
+        "wine": "decrease_party_supply"
+      },
+      "target": 2
+    },
+    "thin_1120": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "empty_glass"
+      },
+      "target": 2
+    },
+    "thin_1121": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_glass_amount"
+      },
+      "target": 1
+    },
+    "thin_1122": {
+      "verb_condition": "thin",
+      "variants": {
+        "frame": "loosen",
+        "railing": "separate",
+        "street_sign": "disconnect_sign",
+        "wine": "decrease_party_supply"
+      },
+      "target": 1
+    }
+  },
+  "variant_targets": {
+    "thick": {
+      "frame": {
+        "deform": 41
+      },
+      "railing": {
+        "detach": 41
+      },
+      "street_sign": {
+        "activate_beacon": 20,
+        "disconnect_sign": 21
+      },
+      "wine": {
+        "empty_glass": 14,
+        "decrease_glass_amount": 13,
+        "decrease_party_supply": 14
+      }
+    },
+    "thin": {
+      "frame": {
+        "deform": 29,
+        "loosen": 30
+      },
+      "railing": {
+        "detach": 30,
+        "separate": 29
+      },
+      "street_sign": {
+        "activate_beacon": 20,
+        "disconnect_beacon": 20,
+        "disconnect_sign": 19
+      },
+      "wine": {
+        "empty_glass": 20,
+        "decrease_glass_amount": 19,
+        "decrease_party_supply": 20
+      }
+    }
+  },
+  "demographic_fields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ]
+}
