@@ -6,3 +6,11 @@ data/
 test-results/
 dist/
 *.sqlite3*
+analysis/input/
+analysis/output/
+analysis/private/
+analysis/*.html
+analysis/*.md
+!analysis/README.md
+.Rhistory
+.RData

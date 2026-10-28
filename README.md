@@ -2,6 +2,8 @@
 
 English pilots for comparing thick causal verbs with alternating thin verbs.
 
+[R Markdown figure code and mock examples](analysis/README.md) prepares per-version thick/thin comparisons and separate overview figures. It generates figures without a report; participant data and production outputs remain excluded from Git.
+
 Implemented pilots are **Pilots/Absences**, **Pilots/Factivity**, and **Pilots/Chains**.
 
 ## Open the review hub
