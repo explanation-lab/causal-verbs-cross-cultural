@@ -23,7 +23,7 @@ The [Chains review](http://127.0.0.1:8765/Pilots/Chains/preview.html) and [Chain
 
 The preview also works on an ordinary static HTTP server. The participant entry requires `tools/serve.py`; it does not silently collect unsaved responses on static hosting.
 
-This repository is prepared for local review. No recruitment, public hosting, Study Console registration, or production deployment has been configured.
+The repository is public and the review hub is hosted on [GitHub Pages](https://explanation-lab.github.io/causal-verbs-cross-cultural/). Separate `collection/` entries are registered in the Study Console and remain in Sandbox testing. See [Console setup and handoff](CONSOLE_PILOTS.md) for allocation targets, validation, and the remaining Prolific steps. No recruitment has been launched.
 
 See [the Absences design and operation notes](Pilots/Absences/README.md) for materials, allocation, consent, data, and checks.
 
