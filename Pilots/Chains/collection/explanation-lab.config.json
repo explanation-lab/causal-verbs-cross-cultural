@@ -2,7 +2,7 @@
   "format": "explanation-lab-study-config",
   "manifestVersion": "1.2.0",
   "schemaVersion": "2.0.0",
-  "convertedAt": "2026-10-28T15:27:45.431Z",
+  "convertedAt": "2026-10-28T15:41:03.556Z",
   "sourceZip": "Chains-console-source.zip",
   "jsPsychVersion": "7.3.4",
   "experimentVersion": "chains-english-console-2.0.0",
@@ -118,6 +118,6 @@
     "everyday_language"
   ],
   "conversionOutcome": "ready",
-  "packageFingerprint": "10da123072717a6d5f86f34102b4b4fd405fd1ffd21e9e06ed88505bd7fb2454",
+  "packageFingerprint": "cbe471aaeb4d163853d2024cc6cd5357c72f3608120291c822289ed255389240",
   "originalBackupPaths": []
 }

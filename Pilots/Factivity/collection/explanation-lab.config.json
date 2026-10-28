@@ -2,7 +2,7 @@
   "format": "explanation-lab-study-config",
   "manifestVersion": "1.2.0",
   "schemaVersion": "2.0.0",
-  "convertedAt": "2026-10-28T15:27:45.197Z",
+  "convertedAt": "2026-10-28T15:41:03.340Z",
   "sourceZip": "Factivity-console-source.zip",
   "jsPsychVersion": "7.3.4",
   "experimentVersion": "factivity-english-console-2.0.0",
@@ -58,6 +58,6 @@
     "everyday_language"
   ],
   "conversionOutcome": "ready",
-  "packageFingerprint": "9319d02c42de23ee97397d55e24afc127ee4434bd30eb8e7d8124777b21fc8bf",
+  "packageFingerprint": "1bf4968cc977eec87cf01d2eb416c311030b477f940717f54e907824f5decff9",
   "originalBackupPaths": []
 }

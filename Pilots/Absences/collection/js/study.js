@@ -183,7 +183,7 @@ const DEMOGRAPHIC_FIELDS = ["age", "sex", "birth_country", "current_country", "r
     globalThis.absenceStudy.jsPsych=jsPsych;
     jsPsych.data.addProperties({session_id:state.id,condition:explanationLab.launch.condition,verb_condition:selected.condition,review_mode:review,valid_participant_data:!review,
       case_order:[...selected.case_order],sentence_order:[...selected.sentence_order],assigned_variants:{...selected.variants},study_version:config.studyVersion});
-    for (const record of state.records) jsPsych.data.write({...record});
+    for (const record of state.records) jsPsych.data.get().push({...record});
     if(!review && state.complete) {complete();return;}
     if(index>=list.length) {complete();return;}
     const timeline=list.slice(index).map((screen,i)=>trial(screen,index+i));

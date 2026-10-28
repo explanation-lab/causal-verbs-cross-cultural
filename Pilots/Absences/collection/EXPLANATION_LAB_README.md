@@ -1,6 +1,6 @@
 # Explanation Lab conversion report
 
-Converted: 2026-10-28T15:27:44.954Z
+Converted: 2026-10-28T15:41:03.097Z
 Source ZIP: Absences-console-source.zip
 jsPsych: 7.3.4
 Experiment version: absences-english-console-2.0.0
@@ -10,7 +10,7 @@ Launch assignment parameter: condition
 Launch conditions: thick, thin_0000, thin_0001, thin_0100, thin_0101, thin_1000, thin_1001, thin_1100, thin_1101
 Internal condition cells: none detected
 Demographics: age, sex, birth_country, current_country, race_ethnicity, first_language, other_languages_spoken, other_languages, everyday_language
-Package fingerprint: bcbe76c640841bb6d2e3418ab4b3e81f8e36dbc964de5a1577d7b2ede939190e
+Package fingerprint: 623a075e70fa95ab890f8ee1039e8439707d905cd7094e523a9355e61201a424
 
 ## Changes
 - Added explanation-lab.config.json with confirmed versions and data mappings.

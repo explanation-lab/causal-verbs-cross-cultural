@@ -113,7 +113,7 @@ def build(name,ns,slug):
 ''' + text[end:]
     text=replace_once(text,'jsPsych.data.addProperties({session_id:state.id,condition:selected.condition,','jsPsych.data.addProperties({session_id:state.id,condition:explanationLab.launch.condition,verb_condition:selected.condition,')
     marker='    if(!review && state.complete) {complete();return;}'
-    text=replace_once(text,marker,'    for (const record of state.records) jsPsych.data.write({...record});\n'+marker)
+    text=replace_once(text,marker,'    for (const record of state.records) jsPsych.data.get().push({...record});\n'+marker)
     start=text.index('  async function start()');end=text.index('    globalThis.',start)
     # The first globalThis after start belongs to the exposed review controller.
     text=text[:start]+'''  async function start() {
