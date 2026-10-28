@@ -127,6 +127,7 @@ color_version_strips <- function(plot, versions, condition = NULL) {
   grob
 }
 profile_plot <- function(versions, condition = NULL) {
+  if (nrow(versions) != 1L) stop('Each materials version must have its own figure.')
   d <- format_data(comparison_summary(versions), versions$study[1])
   d$version_label <- factor(d$version_label, levels = unique(d$version_label))
   if (!is.null(condition)) d <- filter(d, verb_condition == condition)
@@ -166,26 +167,7 @@ for (i in seq_len(nrow(catalog$versions))) {
     mutate(profile_file = paste0(stem, '-profile.png'), data_kind = params$mode,
            placement = 'Immediately after this section\'s materials table')
 }
-# The overviews use the same selected profile layout, with one verb group at a time.
-for (study in catalog$studies$study) {
-  for (condition in c('thick', 'thin')) {
-    versions <- catalog$versions %>% filter(.data$study == .env$study)
-    if (condition == 'thick') {
-      versions <- versions %>% mutate(variant = thick_variant) %>%
-        distinct(case, variant, .keep_all = TRUE) %>%
-        mutate(doc_heading = vapply(strsplit(thick_heading, ' | ', fixed = TRUE), `[`, character(1), 1L))
-    }
-    save_plot(profile_plot(versions, condition), paste(tolower(study), condition, 'overview', sep = '-'),
-              12, max(4.1, nrow(versions) * 2.2 + 1.3))
-  }
-}
-beach <- catalog$versions %>% filter(study == 'Absences', case == 'beach')
-example_suffix <- if (mock) '-mock' else ''
-save_plot(profile_plot(beach), paste0('selected-profile', example_suffix), 11, 6.4)
-save_plot(profile_plot(catalog$versions %>% filter(study == 'Factivity', variant == 'stop_working')),
-          paste0('selected-factivity', example_suffix), 10, 4.1)
-save_plot(profile_plot(catalog$versions %>% filter(study == 'Chains', case == 'frame', variant == 'deform')),
-          paste0('selected-chains', example_suffix), 10, 4.1)
+# Exactly one figure per materials version; combined and summary figures are deferred.
 write_csv(bind_rows(placement), file.path(output, 'google-doc-figure-placement.csv'))
 # Figure style is approved; production figures will be added to Docs after analysis.
 writeLines(capture.output(sessionInfo()), file.path(output, 'R-session-info.txt'))
