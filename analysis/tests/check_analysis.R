@@ -1,5 +1,12 @@
 # Run from repository root: Rscript analysis/tests/check_analysis.R [sandbox ZIPs...]
 source('analysis/R/data.R')
+# A production invocation must try to read its explicit file, never execute mock
+# defaults injected from the R Markdown YAML by knitr::purl.
+runner_check <- suppressWarnings(system2(file.path(R.home('bin'), 'Rscript'),
+  c('analysis/render_figures.R', 'production', '/nonexistent/pilot-runner-regression.zip'),
+  stdout = TRUE, stderr = TRUE))
+stopifnot(!is.null(attr(runner_check, 'status')),
+          any(grepl('Input file does not exist', runner_check, fixed = TRUE)))
 catalog <- read_catalog('.')
 stopifnot(nrow(catalog$versions) == 24,
           nrow(distinct(catalog$versions, study, case, thick_variant)) == 16,

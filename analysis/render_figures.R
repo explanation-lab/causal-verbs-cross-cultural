@@ -15,5 +15,14 @@ params <- list(mode = mode, input_files = inputs,
                exclusions = Sys.getenv('PILOT_EXCLUSIONS', unset = NA_character_))
 if (is.na(params$exclusions)) params$exclusions <- NULL
 code <- tempfile(fileext = '.R')
-invisible(knitr::purl('analysis/figures.Rmd', output = code, quiet = TRUE, documentation = 0))
+# purl otherwise emits a params assignment from YAML, replacing CLI production
+# settings with the document's mock defaults. Strip only the YAML front matter.
+lines <- readLines('analysis/figures.Rmd', warn = FALSE)
+if (length(lines) && lines[1] == '---') {
+  yaml_end <- which(seq_along(lines) > 1 & lines == '---')[1]
+  if (is.na(yaml_end)) stop('Unclosed R Markdown YAML header.')
+  lines <- lines[-seq_len(yaml_end)]
+}
+invisible(knitr::purl(text = lines, output = code, quiet = TRUE, documentation = 0))
 tryCatch(source(code, local = environment()), finally = unlink(code))
+if (!identical(params$mode, mode)) stop('Figure mode changed during execution.')
