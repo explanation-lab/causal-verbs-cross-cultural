@@ -1,0 +1,63 @@
+---
+title: "Factivity accuracy analysis and figures"
+output: html_document
+---
+
+```{r accuracy-data, include=FALSE}
+# Run through render_accuracy.R. There is deliberately no mock/default input.
+if(!exists('params')||is.null(params$input_file))stop('Supply an explicit production export.')
+source('analysis/R/data.R')
+source('analysis/R/factivity_accuracy.R')
+suppressPackageStartupMessages(library(ggplot2))
+catalog<-read_accuracy_catalog(repo_root)
+export<-read_one_export(params$input_file)
+response<-filter(export,mode=='production',trial_role=='response')
+stopifnot(nrow(response)>0,all(response$measure=='accuracy'),
+          all(response$probe_id=='english-learner-cause-and-burn'),
+          all(response$rating_scale_min=='1'),all(response$rating_scale_max=='7'))
+imported<-load_ratings(params$input_file,catalog)
+ratings<-imported$ratings
+stopifnot(n_distinct(ratings$participant)==100,nrow(ratings)==1200)
+output<-file.path(repo_root,params$output_dir)
+stopifnot(startsWith(paste0(output,'/'),paste0(repo_root,'/analysis/output/')))
+dir.create(output,recursive=TRUE,showWarnings=FALSE)
+mock<-FALSE
+# Matrix resampling retains the same percentile bootstrap while avoiding slow
+# per-draw R callbacks. Each cell contains one response per participant.
+bootstrap_mean<-function(x,B=100000L){
+ q<-quantile(colMeans(matrix(sample(x,length(x)*B,TRUE),nrow=length(x))),c(.025,.975),names=FALSE)
+ tibble(n=length(x),mean=mean(x),low=q[1],high=q[2])
+}
+cells<-summarise_ratings(ratings,params$bootstrap_draws)
+stats<-accuracy_statistics(ratings,catalog$versions,params$bootstrap_draws)
+write_csv(imported$import_audit,file.path(output,'import-audit.csv'))
+write_csv(cells,file.path(output,'cell-summary.csv'))
+write_csv(stats$versions,file.path(output,'version-statistics.csv'))
+write_csv(stats$overall,file.path(output,'overall-statistics.csv'))
+write_csv(stats$thick_subject,file.path(output,'thick-subject-contrast.csv'))
+write_csv(count(distinct(ratings,participant,verb_condition),verb_condition),file.path(output,'participant-counts.csv'))
+```
+
+```{r approved-figure-style, include=FALSE}
+# Reuse the approved plotting chunk verbatim; do not regenerate a report or
+# execute the original study's data/defaults. Only the measure label differs.
+template<-readLines('analysis/figures.Rmd',warn=FALSE)
+start<-grep('^```\\{r figure-functions,',template)
+end<-which(seq_along(template)>start&template=='```')[1]
+plot_code<-paste(template[(start+1):(end-1)],collapse='\n')
+plot_code<-sub("y = 'Mean naturalness (1-7)'","y = 'Mean accuracy (1-7)'",plot_code,fixed=TRUE)
+eval(parse(text=plot_code))
+candidate_labels<-function(study)c(direct='Event (direct)',fact='Fact-denoting')
+placement<-list()
+for(i in seq_len(nrow(catalog$versions))){
+ v<-catalog$versions[i,]; stem<-paste('factivity-accuracy',v$case,v$variant,sep='-')
+ save_plot(profile_plot(v),paste0(stem,'-profile'),10,4.1)
+ placement[[i]]<-mutate(v,profile_file=paste0(stem,'-profile.png'))
+}
+write_csv(bind_rows(placement),file.path(output,'figure-placement.csv'))
+writeLines(capture.output(sessionInfo()),file.path(output,'R-session-info.txt'))
+print(count(distinct(ratings,participant,verb_condition),verb_condition))
+print(filter(stats$versions,metric %in% c('fact_lexical','fact_loss')) %>%
+ select(label,metric,thin,thick,difference,low,high,p,p_holm),n=18,width=Inf)
+message('Nine production accuracy figures and participant-level statistics saved. No report generated.')
+```

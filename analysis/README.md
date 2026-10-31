@@ -43,3 +43,13 @@ Shared thick observations are reused as references in the appropriate individual
 `google-doc-figure-placement.csv` maps every approved figure to the verified document ID and exact section heading in the [materials folder](https://drive.google.com/drive/folders/1gGhEg-Fbk3wLj1nceKjL3vCVCoQNfEg3). Placement is immediately after that section's materials table. The layout is approved; production analysis and Google Docs insertion are subsequent steps. This script does not modify Google Docs.
 
 Regenerate public metadata after an intentional material change with `python3 analysis/build_catalog.py`. Run integrity checks with `Rscript analysis/tests/check_analysis.R`. Only code, material metadata, and explicitly simulated example images belong in this public repository. Do not commit real exports or results.
+
+## Factivity English-learner accuracy follow-up
+
+`factivity_accuracy.Rmd` analyzes the follow-up separately from the original naturalness pilots. It uses the frozen collection materials, including overwhelm and ruin, and requires an explicit production bundle:
+
+```sh
+Rscript analysis/render_accuracy.R analysis/input/factivity-accuracy.zip
+```
+
+The script validates the accuracy probe, assignments, materials, and complete rating sets, and expects the completed 100-participant pilot. It saves nine individual PNG/PDF figures and statistical CSVs in ignored `analysis/output/factivity-accuracy/`, without generating a report. Figures retain the approved layout and use an accuracy-axis label. `R/factivity_accuracy.R` computes paired construction and subject contrasts before comparing the independent thick and thin groups. It provides participant-bootstrap 95% intervals, two-sided Welch tests, and Holm-adjusted p-values across the nine versions separately for each contrast. Overall estimates first average the three story families within each participant, so shared thick baselines are not counted repeatedly. Overall tests remain exploratory and unadjusted.
