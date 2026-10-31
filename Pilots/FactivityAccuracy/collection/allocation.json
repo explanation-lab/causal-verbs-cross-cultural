@@ -1,0 +1,309 @@
+{
+  "study": "FactivityAccuracy",
+  "total": 100,
+  "conditions": {
+    "thick": 36,
+    "thin": 64
+  },
+  "distinct_versions": {
+    "thick": 5,
+    "thin": 9
+  },
+  "cells": {
+    "thick_000": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "stop"
+      },
+      "target": 9
+    },
+    "thick_001": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_network"
+      },
+      "target": 9
+    },
+    "thick_010": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "stop"
+      },
+      "target": 9
+    },
+    "thick_011": {
+      "verb_condition": "thick",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_network"
+      },
+      "target": 9
+    },
+    "thin_000": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "stop"
+      },
+      "target": 3
+    },
+    "thin_001": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "power_down"
+      },
+      "target": 2
+    },
+    "thin_002": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_battery"
+      },
+      "target": 3
+    },
+    "thin_003": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "die_kill",
+        "scooter": "disconnect_network"
+      },
+      "target": 3
+    },
+    "thin_010": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "stop"
+      },
+      "target": 3
+    },
+    "thin_011": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "power_down"
+      },
+      "target": 3
+    },
+    "thin_012": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_battery"
+      },
+      "target": 2
+    },
+    "thin_013": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "turn_off",
+        "scooter": "disconnect_network"
+      },
+      "target": 3
+    },
+    "thin_020": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "ruin",
+        "scooter": "stop"
+      },
+      "target": 2
+    },
+    "thin_021": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "ruin",
+        "scooter": "power_down"
+      },
+      "target": 3
+    },
+    "thin_022": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "ruin",
+        "scooter": "disconnect_battery"
+      },
+      "target": 3
+    },
+    "thin_023": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "stop_working",
+        "phone": "ruin",
+        "scooter": "disconnect_network"
+      },
+      "target": 2
+    },
+    "thin_100": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "die_kill",
+        "scooter": "stop"
+      },
+      "target": 3
+    },
+    "thin_101": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "die_kill",
+        "scooter": "power_down"
+      },
+      "target": 2
+    },
+    "thin_102": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "die_kill",
+        "scooter": "disconnect_battery"
+      },
+      "target": 3
+    },
+    "thin_103": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "die_kill",
+        "scooter": "disconnect_network"
+      },
+      "target": 2
+    },
+    "thin_110": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "turn_off",
+        "scooter": "stop"
+      },
+      "target": 3
+    },
+    "thin_111": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "turn_off",
+        "scooter": "power_down"
+      },
+      "target": 3
+    },
+    "thin_112": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "turn_off",
+        "scooter": "disconnect_battery"
+      },
+      "target": 2
+    },
+    "thin_113": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "turn_off",
+        "scooter": "disconnect_network"
+      },
+      "target": 3
+    },
+    "thin_120": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "ruin",
+        "scooter": "stop"
+      },
+      "target": 2
+    },
+    "thin_121": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "ruin",
+        "scooter": "power_down"
+      },
+      "target": 3
+    },
+    "thin_122": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "ruin",
+        "scooter": "disconnect_battery"
+      },
+      "target": 3
+    },
+    "thin_123": {
+      "verb_condition": "thin",
+      "variants": {
+        "sewer_system": "overwhelm",
+        "phone": "ruin",
+        "scooter": "disconnect_network"
+      },
+      "target": 3
+    }
+  },
+  "variant_targets": {
+    "thick": {
+      "sewer_system": {
+        "stop_working": 36
+      },
+      "phone": {
+        "die_kill": 18,
+        "turn_off": 18
+      },
+      "scooter": {
+        "stop": 18,
+        "disconnect_network": 18
+      }
+    },
+    "thin": {
+      "sewer_system": {
+        "stop_working": 32,
+        "overwhelm": 32
+      },
+      "phone": {
+        "die_kill": 21,
+        "turn_off": 22,
+        "ruin": 21
+      },
+      "scooter": {
+        "stop": 16,
+        "power_down": 16,
+        "disconnect_battery": 16,
+        "disconnect_network": 16
+      }
+    }
+  },
+  "demographic_fields": [
+    "age",
+    "sex",
+    "birth_country",
+    "current_country",
+    "race_ethnicity",
+    "first_language",
+    "other_languages_spoken",
+    "other_languages",
+    "everyday_language"
+  ]
+}

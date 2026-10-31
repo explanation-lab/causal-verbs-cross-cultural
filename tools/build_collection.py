@@ -9,7 +9,7 @@ def replace_once(text,old,new):
     if text.count(old)!=1: raise ValueError('Expected one source marker: '+old[:70])
     return text.replace(old,new,1)
 
-def build(name,ns,slug):
+def build(name,ns,slug,measure='naturalness'):
     source=ROOT/'Pilots'/name
     raw=(source/'js/materials.js').read_text()
     data=json.loads(raw[raw.index('{',raw.index('const materials =')):raw.index(';',raw.index('const materials ='))])
@@ -71,7 +71,7 @@ def build(name,ns,slug):
     text=replace_once(text,"const storageKey='causal-verbs-"+slug+"-'+config.studyVersion;","let storageKey='causal-verbs-"+slug+"-'+config.studyVersion;\n  const allocation="+json.dumps(cells)+";\n  let explanationLab, launchCell, savePromise;\n  const studyStarted=performance.now();")
     start=text.index('  async function request(');end=text.index('  function page(',start)
     text=text[:start]+text[end:]
-    text=replace_once(text,'data:{...screen,condition:selected.condition,','data:{...screen,condition:explanationLab.launch.condition,verb_condition:selected.condition,\n        trial_role:screen.stage===\'rating\'?\'response\':screen.stage===\'demographics\'?\'demographic\':screen.stage,\n        item_id:screen.case??null,measure:screen.stage===\'rating\'?\'naturalness\':screen.stage,')
+    text=replace_once(text,'data:{...screen,condition:selected.condition,','data:{...screen,condition:explanationLab.launch.condition,verb_condition:selected.condition,\n        trial_role:screen.stage===\'rating\'?\'response\':screen.stage===\'demographics\'?\'demographic\':screen.stage,\n        item_id:screen.case??null,measure:screen.stage===\'rating\'?'+json.dumps(measure)+':screen.stage,')
     text=replace_once(text,'delete data.stimulus;','delete data.stimulus;\n        if (data.demographics) Object.assign(data,data.demographics);')
     start=text.index('  async function complete()');end=text.index('  function run(',start)
     text=text[:start]+'''  async function complete() {

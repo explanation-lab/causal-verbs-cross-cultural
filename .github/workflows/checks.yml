@@ -12,6 +12,7 @@ jobs:
           node-version: '22'
       - run: node tests/core.cjs
       - run: node tests/factivity.cjs
+      - run: node tests/factivity-accuracy.cjs
       - run: node tests/chains.cjs
       - run: node --experimental-vm-modules tests/collection.cjs
       - run: python3 -m unittest discover -s tests -p '*_test.py'

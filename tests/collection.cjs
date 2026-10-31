@@ -31,7 +31,7 @@ async function session(name,ns,code,{storage=new Map(),until=Infinity,decline=fa
    trial.on_start();target.innerHTML=trial.stimulus();trial.on_load();
    const stage=trial.data.stage;
    if(stage==='consent')element(decline?'consent-no':'consent-yes').onclick();
-   else if(stage==='rating') {assert(target.innerHTML.includes('How natural is this sentence as a description of the situation?'));assert(target.innerHTML.includes(escape(trial.data.sentence)));radio.onchange();element('rating-continue').onclick();}
+   else if(stage==='rating') {assert(target.innerHTML.includes(name==='FactivityAccuracy'?'Imagine someone is trying to learn English from you and asks you to indicate how accurate this statement is:':'How natural is this sentence as a description of the situation?'));assert(target.innerHTML.includes(escape(trial.data.sentence)));radio.onchange();element('rating-continue').onclick();}
    else if(stage==='demographics')element('demographics-form').onsubmit({preventDefault(){}});
    else if(stage==='feedback')element('feedback-form').onsubmit({preventDefault(){}});
    else element('stage-continue').click();
@@ -44,7 +44,7 @@ async function session(name,ns,code,{storage=new Map(),until=Infinity,decline=fa
 }
 (async()=> {
  let total=0;
- for(const [name,ns] of [['Absences','absence'],['Factivity','factivity'],['Chains','chains']]) {
+ for(const [name,ns] of [['Absences','absence'],['Factivity','factivity'],['Chains','chains'],['FactivityAccuracy','factivity']]) {
   const dir=path.join(root,'Pilots',name,'collection');
   const a=JSON.parse(fs.readFileSync(path.join(dir,'allocation.json'))),codes=Object.keys(a.cells);
   const manifest=JSON.parse(fs.readFileSync(path.join(dir,'explanation-lab.config.json')));
@@ -55,7 +55,8 @@ async function session(name,ns,code,{storage=new Map(),until=Infinity,decline=fa
   for(const code of codes) {
    const r=await session(name,ns,code);assert.equal(r.calls.length,1);
    const saved=r.calls[0];const ratings=saved.trials.filter(r=>r.stage==='rating');
-   assert.equal(ratings.length,name==='Factivity'?12:16);
+   assert.equal(ratings.length,name.startsWith('Factivity')?12:16);
+   if(name==='FactivityAccuracy') assert(ratings.every(t=>t.measure==='accuracy' && t.probe_id==='english-learner-cause-and-burn' && t.rating_scale_min===1 && t.rating_scale_max===7));
    assert(ratings.every(t=>t.condition===code && t.verb_condition===a.cells[code].verb_condition && t.rating===4));
    assert.equal(saved.trials.find(r=>r.stage==='demographics').age,31);
    assert(r.html.includes('Sandbox complete'));total++;
@@ -63,7 +64,7 @@ async function session(name,ns,code,{storage=new Map(),until=Infinity,decline=fa
   const code=codes.at(-1),partial=await session(name,ns,code,{until:9});
   assert.equal(partial.calls.length,0);
   const resumed=await session(name,ns,code,{storage:partial.storage});
-  assert.equal(resumed.calls.length,1);assert.equal(resumed.rows.filter(r=>r.stage==='rating').length,name==='Factivity'?12:16);
+  assert.equal(resumed.calls.length,1);assert.equal(resumed.rows.filter(r=>r.stage==='rating').length,name.startsWith('Factivity')?12:16);
   const again=await session(name,ns,code,{storage:resumed.storage});assert.equal(again.calls.length,0);
   const refusal=await session(name,ns,code,{decline:true});assert.equal(refusal.calls.length,0);
   const failed=await session(name,ns,code,{failSave:true});assert.equal(failed.calls.length,1);assert(!failed.html.includes('Sandbox complete'));

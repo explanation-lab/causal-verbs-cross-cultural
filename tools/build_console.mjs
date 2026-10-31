@@ -9,7 +9,7 @@ if(!consoleRoot)throw Error('Pass the Study Console source path.');
 const {inspectStudyZip,convertStudyZip}=await import(pathToFileURL(path.join(consoleRoot,'lib/study-converter.ts')));
 const {zipSync,unzipSync}=createRequire(path.join(consoleRoot,'package.json'))('fflate');
 const client=fs.readFileSync(path.join(consoleRoot,'public/lab-study-client.js'),'utf8');
-for(const name of ['Absences','Factivity','Chains']) {
+for(const name of (process.argv.slice(3).length?process.argv.slice(3):['Absences','Factivity','Chains'])) {
   const dir=path.join(root,'Pilots',name,'collection'),files={};
   const walk=(base)=>{for(const item of fs.readdirSync(path.join(dir,base),{withFileTypes:true})) {
     const rel=path.posix.join(base,item.name);
