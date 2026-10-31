@@ -11,7 +11,7 @@ import hashlib
 import json
 import shutil
 import openpyxl
-from build_collection import build, replace_once
+from build_collection import build
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'Pilots/Factivity'

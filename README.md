@@ -6,6 +6,8 @@ English pilots for comparing thick causal verbs with alternating thin verbs.
 
 Implemented pilots are **Pilots/Absences**, **Pilots/Factivity**, and **Pilots/Chains**.
 
+The separate [Factivity English-learner accuracy follow-up](Pilots/FactivityAccuracy/README.md) retains the original cases and adds phone/ruin and sewer/overwhelm. Its [researcher review](https://explanation-lab.github.io/causal-verbs-cross-cultural/Pilots/FactivityAccuracy/preview.html) includes all nine thin versions. The Console registration remains in Sandbox testing with 100 planned participants (36 thick / 64 thin); all 28 hosted assignment groups and their exported records are verified. See the latest section of [Console setup](CONSOLE_PILOTS.md) for its separate study ID and remaining Prolific steps.
+
 ## Open the review hub
 
 From the repository root, run:

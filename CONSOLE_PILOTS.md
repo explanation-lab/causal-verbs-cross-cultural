@@ -1,5 +1,24 @@
 # Study Console pilots
 
+## Factivity accuracy follow-up — October 31, 2026
+
+The separate [Factivity accuracy pilot](https://explanation-lab-studies.web.app/?view=projects&project=CAUSAL-VERBS-CROSS-CULTURAL-WLKQ&study=CAUSAL-VERBS-FACTIVITY-ACCUR-ZDDV&data=sandbox) is in **Sandbox testing**, with **28 passed Sandbox groups and zero production submissions**. It has not been launched. Original study registrations and data are unchanged.
+
+- Console ID: `CAUSAL-VERBS-FACTIVITY-ACCUR-ZDDV`.
+- Target: 100 participants, 36 thick / 64 thin, with exact 28-group quotas in `Pilots/FactivityAccuracy/collection/allocation.json`.
+- Retains all seven original thin versions and five distinct thick contexts; adds phone/ruin and sewer/overwhelm.
+- Uses the *Cause and Burn* English-learner accuracy probe, 1 Completely inaccurate to 7 Completely accurate; records `measure=accuracy` and the probe/scale fields.
+- [Researcher review](https://explanation-lab.github.io/causal-verbs-cross-cultural/Pilots/FactivityAccuracy/preview.html), using the same layout and added sewer/phone selectors.
+- Collection version: `factivity-accuracy-english-console-2.0.0`; official client 1.5.1; package fingerprint `5674f4ca7d91cb543f4c594c6ed606ab8b36c40d4494b3dd414a22b4ce45d151`.
+
+All 28 hosted sessions completed the actual browser flow and passed the Console's exact-condition verification. The downloaded bundle was checked independently against source materials and allocation: 616 raw trials, 336 accuracy ratings, 28 demographic rows, correct source references, single endings, stable sentence roles, assigned variants, scale metadata, and 22 unique screens per session. The first thick session was reloaded after two ratings and exported all 12 assigned answers without loss or duplication. Source-level checks additionally cover refusal, failed-save handling, resume and duplicate reload behavior for every allocation group. Data format is confirmed in the Console.
+
+The final one-click preflight leaves only the actual **Prolific completion URL** and **Prolific link/100 places/completion-code confirmation** outstanding. No completion URL was invented or copied from the original pilot, and the Prolific configuration checkbox remains unchecked. After supplying the actual URL, verify its redirect and rerun preflight before any authorized launch.
+
+Recheck a downloaded Sandbox bundle with `python3 tools/validate_accuracy_sandbox.py /path/to/sandbox_data.zip`. Exports and screenshots remain excluded from Git.
+
+## Original pilot setup record — October 28, 2026
+
 Prepared and verified October 28, 2026. All three studies remain in **Sandbox testing**, with zero production submissions. Completion URLs are intentionally blank. Recruitment has not been launched.
 
 [Open the Console project](https://explanation-lab-studies.web.app/?view=projects&project=CAUSAL-VERBS-CROSS-CULTURAL-WLKQ).
