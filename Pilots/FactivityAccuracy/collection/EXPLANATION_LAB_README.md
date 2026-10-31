@@ -1,6 +1,6 @@
 # Explanation Lab conversion report
 
-Converted: 2026-10-31T11:29:41.990Z
+Converted: 2026-10-31T12:49:19.836Z
 Source ZIP: FactivityAccuracy-console-source.zip
 jsPsych: 7.3.4
 Experiment version: factivity-accuracy-english-console-2.0.0
@@ -10,7 +10,7 @@ Launch assignment parameter: condition
 Launch conditions: thick_000, thick_001, thick_010, thick_011, thin_000, thin_001, thin_002, thin_003, thin_010, thin_011, thin_012, thin_013, thin_020, thin_021, thin_022, thin_023, thin_100, thin_101, thin_102, thin_103, thin_110, thin_111, thin_112, thin_113, thin_120, thin_121, thin_122, thin_123
 Internal condition cells: none detected
 Demographics: age, sex, birth_country, current_country, race_ethnicity, first_language, other_languages_spoken, other_languages, everyday_language
-Package fingerprint: 5674f4ca7d91cb543f4c594c6ed606ab8b36c40d4494b3dd414a22b4ce45d151
+Package fingerprint: ec4afb7be5a9293b646a7ee94a28e0b2052d127ab2e41cde13c718905a981690
 
 ## Changes
 - Added explanation-lab.config.json with confirmed versions and data mappings.

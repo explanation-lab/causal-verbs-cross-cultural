@@ -9,7 +9,7 @@ The separate [Factivity accuracy pilot](https://explanation-lab-studies.web.app/
 - Retains all seven original thin versions and five distinct thick contexts; adds phone/ruin and sewer/overwhelm.
 - Uses the *Cause and Burn* English-learner accuracy probe, 1 Completely inaccurate to 7 Completely accurate; records `measure=accuracy` and the probe/scale fields.
 - [Researcher review](https://explanation-lab.github.io/causal-verbs-cross-cultural/Pilots/FactivityAccuracy/preview.html), using the same layout and added sewer/phone selectors.
-- Collection version: `factivity-accuracy-english-console-2.0.0`; official client 1.5.1; package fingerprint `5674f4ca7d91cb543f4c594c6ed606ab8b36c40d4494b3dd414a22b4ce45d151`.
+- Collection version: `factivity-accuracy-english-console-2.0.0`; official client 1.5.1; package fingerprint `ec4afb7be5a9293b646a7ee94a28e0b2052d127ab2e41cde13c718905a981690`.
 
 All 28 hosted sessions completed the actual browser flow and passed the Console's exact-condition verification. The downloaded bundle was checked independently against source materials and allocation: 616 raw trials, 336 accuracy ratings, 28 demographic rows, correct source references, single endings, stable sentence roles, assigned variants, scale metadata, and 22 unique screens per session. The first thick session was reloaded after two ratings and exported all 12 assigned answers without loss or duplication. Source-level checks additionally cover refusal, failed-save handling, resume and duplicate reload behavior for every allocation group. Data format is confirmed in the Console.
 

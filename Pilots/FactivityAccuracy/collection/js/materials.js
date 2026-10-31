@@ -24,7 +24,7 @@
     "consent_prompt": "If you consent to take part in this study, please indicate so below:",
     "consent_button_yes": "I consent",
     "consent_button_no": "I do NOT consent",
-    "instructions_intro": "In this study, you will read a series of short situations. After each situation, you will be asked to make judgments about different sentences describing what happened.",
+    "instructions_intro": "In this study, you'll read a series of short situations. After each situation, you'll be asked to make judgments about different sentences describing what happened.",
     "instructions_read_carefully": "Please read each situation and sentence carefully before answering.",
     "button_begin_study": "Begin study",
     "button_continue": "Continue",
